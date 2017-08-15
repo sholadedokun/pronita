@@ -4,6 +4,7 @@ var mongoose =require('mongoose');
 var appSchema = require('../app/models/appSchema.js');
 var nodemailer = require('nodemailer');
 let _ = require('lodash');
+const jwt = require('jwt-simple');
 
 //passport for authentication
 var passport = require('passport')
@@ -138,6 +139,10 @@ function addOrQuery(req, res, next){
         req.queryKeys.$or.push({_id: queryKeys[key]});
     }
     next();
+}
+function tokenForUser(user) {
+  const timestamp = new Date().getTime();
+  return jwt.encode({ sub: user.id, iat: timestamp }, config.secret);
 }
 /* GET users listing. */
 router.get('/serverDate', function(req, res, next) {

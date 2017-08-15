@@ -86,12 +86,15 @@ app.use(expressSession({
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.static(path.join(__dirname, 'public')));
-
+app.use(express.static(path.join(__dirname, 'reactpronita')));
 app.use(express.static(path.join(__dirname, '/')));
 
-
 //app.use(fileupload());
-
+app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+});
 app.use('/', routes);
 app.use('/adminActions', adminActions);
 app.use('/appActions', appActions);

@@ -1,0 +1,190 @@
+@import 'font-awesome.min.css';
+@import url('https://fonts.googleapis.com/css?family=Lato:400,700');
+@import url('https://fonts.googleapis.com/css?family=Raleway:300,300italic,500,500italic');
+
+body{
+    margin: 0;
+    padding: 0;
+    font-family: 'Lato','Raleway';
+}
+
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  animation: App-logo-spin infinite 20s linear;
+  height: 80px;
+}
+a{
+    text-decoration: none;
+    font-size: 0.85em
+}
+ul{
+    list-style: none;
+    margin: 0 auto;
+    padding: 0;
+}
+li{
+    float: left;
+    margin: 1em 0;
+}
+.App-header {
+  background-color: #222;
+  height: 50px;
+  padding: 20px;
+  color: white;
+    .companyName{
+        font-size: 2em;
+        float: left;
+        margin: 0 3em;
+    }
+    ul{
+        float: right;
+        margin: 0 3em;
+        li{
+            margin: 0 1em;
+            float:left
+        }
+    }
+    a{
+        color: #ddd
+    }
+    a:hover{
+        color:#fff
+    }
+}
+.nop{
+    padding: 0
+}
+
+.App-intro {
+    width: 100%;
+    font-size: large;
+    button{
+        padding: 10px
+    }
+    height:200px;
+    margin:20px auto;
+}
+.App-body {
+
+    margin: 0 10% 20px;
+    .storyContainer{
+        float:left;
+        width:200px;
+        margin:10px;
+        padding:10px;
+        border: 1px solid #555;
+        text-align: left;
+        p {
+            font-size: 0.85em
+        }
+        min-height: 400px;
+    }
+}
+.textError{
+    font-size: 0.85em;
+    margin: 5px auto;
+    color: #d00
+}
+.searchBar{
+    input, button{
+        background: #fff;
+        padding: 10px;
+        border: 1px solid #555;
+        color:#555;
+        outline: none;
+        font-size: 0.8em;
+    }
+    input{
+        border-radius: 5px;
+        width: 50%;
+    }
+    button{
+        border-top-right-radius: 5px;
+        border-bottom-right-radius: 5px;
+        border-left: 0px;
+        cursor: pointer;
+    }
+}
+.button{
+    border-radius: 5px;
+    text-align: center;
+    padding:10px;
+    border: none;
+    background: none;
+    outline: none;
+}
+.primary{
+    background: #009;
+    color: #fff;
+    margin:15px;
+    display: inline-block;
+}
+.buttonContainer{
+    margin-left: 20px 0
+}
+.review{
+    width: 100%;
+    height:auto;
+    padding: 10px
+
+}
+.restaurantHead{
+    margin: 1.5em 0em;
+    text-align: left;
+    font-weight: bold;
+    div:last-child{
+        text-align: right;
+    }
+}
+.reviewDivider{
+    border-bottom: 1px solid #555;
+    padding: 1em 0;
+}
+.detailsDescription{
+    border-radius: 5px;
+    border: 1px solid #555;
+    border-bottom: none;
+    float: left;
+}
+.detailViewList{
+    text-align: left;
+    border-bottom: 1px solid #555;
+    padding: 0.6em 1.5em;
+}
+.detailLabel{
+    font-weight: bold;
+    margin: 0 1em 0 0.5em;
+}
+.restaurantContainer{
+    border: 1px solid #999;
+    border-radius: 5px;
+    margin: 0 auto;
+    overflow: hidden;
+    height: auto;
+    text-align: left;
+    div{
+        width: auto;
+        overflow: hidden;
+    }
+    span{
+        display: inline-block;
+
+    }
+    .restaurantDetails{
+        padding: 15px 10px;
+        font-size: 0.85em;
+        .name{   font-size: 1.5em     }
+        .smallTitle{   font-size: 1.1em; font-weight: bold }
+        .distance{   font-size: 0.7em; text-align: right;    }
+    }
+}
+.restaurantDetailsContainer{
+    margin: 4em auto;
+}
+@keyframes App-logo-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}

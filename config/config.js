@@ -9,7 +9,8 @@ var config = {
       name: 'pronitaexpress'
     },
     port: process.env.PORT || 3000,
-    db: 'mongodb://localhost/pronitaexpress-development'
+    db: 'mongodb://localhost/pronitaexpress-development',
+    serect: 'pronitaSecretWithOlushola'
   },
 
   test: {
@@ -18,7 +19,8 @@ var config = {
       name: 'pronitaexpress'
     },
     port: process.env.PORT || 3000,
-    db: 'mongodb://localhost/pronitaexpress-test'
+    db: 'mongodb://localhost/pronitaexpress-test',
+    serect: 'pronitaSecretWithOlushola'
   },
 
   production: {
@@ -27,7 +29,8 @@ var config = {
       name: 'pronitaexpress'
     },
     port: process.env.PORT || 3000,
-    db: 'mongodb://localhost/pronitaexpress-production'
+    db: 'mongodb://localhost/pronitaexpress-production',
+    serect: 'pronitaSecretWithOlushola'
   }
 };
 
