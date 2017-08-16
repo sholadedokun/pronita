@@ -4,7 +4,7 @@ import {
   AUTH_USER,
   UNAUTH_USER,
   AUTH_ERROR,
-  FETCH_MESSAGE
+  FETCH_OFFERS
 } from './actionTypes';
 
 const ROOT_URL = 'http://localhost:3000/appActions';
@@ -61,15 +61,15 @@ export function signoutUser() {
   return { type: UNAUTH_USER };
 }
 
-export function fetchMessage() {
+export function fetchProduct() {
     return function(dispatch) {
-        axios.get(ROOT_URL, {
+        axios.get(`${ROOT_URL}/inventory`, {
             headers: { authorization: localStorage.getItem('PronitaToken') }
         })
         .then(response => {
             dispatch({
-                type: FETCH_MESSAGE,
-                payload: response.data.message
+                type: FETCH_OFFERS,
+                payload: response.data
             });
         });
     }

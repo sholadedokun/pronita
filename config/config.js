@@ -10,7 +10,7 @@ var config = {
     },
     port: process.env.PORT || 3000,
     db: 'mongodb://localhost/pronitaexpress-development',
-    serect: 'pronitaSecretWithOlushola'
+    secret: 'pronitaSecretWithOlushola'
   },
 
   test: {
@@ -20,7 +20,7 @@ var config = {
     },
     port: process.env.PORT || 3000,
     db: 'mongodb://localhost/pronitaexpress-test',
-    serect: 'pronitaSecretWithOlushola'
+    secret: 'pronitaSecretWithOlushola'
   },
 
   production: {
@@ -30,7 +30,7 @@ var config = {
     },
     port: process.env.PORT || 3000,
     db: 'mongodb://localhost/pronitaexpress-production',
-    serect: 'pronitaSecretWithOlushola'
+    secret: 'pronitaSecretWithOlushola'
   }
 };
 

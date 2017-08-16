@@ -7,6 +7,7 @@ var bodyParser = require('body-parser');
 var nodemailer = require('nodemailer');
 var expressSession = require('express-session');
 var passport = require('passport')
+const cors = require('cors');
     // var MongoStore= require('connect-mongo')(expressSession);
 
 //multer configurations for uploading emails
@@ -90,11 +91,7 @@ app.use(express.static(path.join(__dirname, 'reactpronita')));
 app.use(express.static(path.join(__dirname, '/')));
 
 //app.use(fileupload());
-app.use(function(req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    next();
-});
+app.use(cors());
 app.use('/', routes);
 app.use('/adminActions', adminActions);
 app.use('/appActions', appActions);

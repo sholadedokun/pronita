@@ -49,7 +49,7 @@ li {
   .App-header a:hover {
     color: #fff; }
 
-.nop {
+.nop, .userMenu ul {
   padding: 0; }
 
 .newPage {
@@ -59,6 +59,12 @@ li {
   text-align: left;
   margin: 0;
   border-right: 1px solid #555; }
+  .userMenu li {
+    display: block;
+    float: none;
+    padding-right: 10px;
+    border-bottom: 1px solid #555;
+    cursor: pointer; }
 
 .App-intro {
   width: 100%;

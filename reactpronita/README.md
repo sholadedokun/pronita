@@ -1,4 +1,4 @@
-REPO FOR PRONITA : AN APP FOR PRODUCT TESTING
+# REPO FOR PRONITA : AN APP FOR PRODUCT TESTING
 ## AUTHOR
 OLUSHOLA ADEDOKUN
 
@@ -24,7 +24,7 @@ OLUSHOLA ADEDOKUN
     - Icon : all icons used for this app are mostly from front-awesome, therefore, their naming syntax was adpted, below are the property (props) description
     * icon: suffix of the icon name i.e if icon name is 'fa-star' this property name will only be 'start'
     * size: size of the icon ranges between: lg, md, sm. default size is sm.
-    * type: incase of special styling, you can include a type that will be directly applied to the class of the icon 
+    * type: incase of special styling, you can include a type that will be directly applied to the class of the icon
 
 ## Testing
 - Open project directory on command Line

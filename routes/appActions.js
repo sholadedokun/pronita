@@ -3,52 +3,14 @@ var router = express.Router();
 var mongoose =require('mongoose');
 var appSchema = require('../app/models/appSchema.js');
 var nodemailer = require('nodemailer');
+var config = require('../config/config')
 let _ = require('lodash');
+
+//authencation
 const jwt = require('jwt-simple');
+const passportService = require('../services/passport');
+const passport = require('passport');
 
-//passport for authentication
-var passport = require('passport')
-LocalStrategy = require('passport-local').Strategy;
-
-
-passport.use(new LocalStrategy({
-    usernameField: "identity",
-    passwordField: "password"
-  },
-  function(username, password, done) {
-
-    appSchema.user.findOne({$or:[{userName:username}, {email:username}]}, function(err, userData) {
-        if (err) return done(err);
-        if (!userData){
-            return done(null, false, {message: "Wrong Username"} )
-        }
-        // test a matching password
-        userData.comparePassword(password, function(err, isMatch) {
-            if (err) return done(err);
-            if(isMatch){
-                return done(null, userData);
-            //    res.json(userData);
-            }
-            else{
-                return done(null, false, { message: 'Incorrect password.' });
-            }
-        });
-    })
-
-  }
-));
-passport.serializeUser(function (user, done) {
-        done(null,user._id);
-//    done(user.Id); // the user id that you have in the session
-});
-
-passport.deserializeUser(function (id, done) {
-    appSchema.user.findById(id, function(err, user) {
-    done(err, user);
-  });
-
-//    done({id: Id}); // generally this is done against user database as validation
-});
 //email configurations
 var smtpConfig = {
     host: 'box875.bluehost.com',
@@ -142,6 +104,7 @@ function addOrQuery(req, res, next){
 }
 function tokenForUser(user) {
   const timestamp = new Date().getTime();
+  console.log(jwt.encode({ sub: user.id, iat: timestamp }, config.secret))
   return jwt.encode({ sub: user.id, iat: timestamp }, config.secret);
 }
 /* GET users listing. */
@@ -177,7 +140,7 @@ router.get('/inventory', addFilters, addOrQuery, function(req, res, next) {
         if(err) return next(err);
         inventory = inventory.filter(function(invent){
             if(invent.inventorySettings) return true;
-           })
+        })
         res.json(inventory)
     })
 
@@ -335,7 +298,7 @@ router.post('/subcategory', function(req, res, next){
     })
 
 });
-router.post('/user', function(req, res, next){
+router.post('/signup', function(req, res, next){
     appSchema.user.find({$or:[{userName:req.body.userName}, {email:req.body.email}]})
     .exec(function(err, user){
         if(err) return next(err);
@@ -351,13 +314,14 @@ router.post('/user', function(req, res, next){
                         userData.comparePassword(req.body.password, function(err, isMatch) {
                             if (err) throw err;
                             if(isMatch){
-                                res.json(userData);
+                                // Repond to request indicating the user was created
+                                res.json({ token: tokenForUser(user) });
                             };
                         });
                     })
                 })
         }
-        else{   res.json({error:'User Already Exist', data:user});   }
+        else{  res.status(422).send({ error: 'Email or Username is in use' });  }
     })
 });
 router.post('/contact', function(req, res, next){
@@ -406,8 +370,9 @@ router.post('/addSubscriber', function(req, res, next){
         else{   res.json({error:'You have already subscribed, thanks for trying again', data:emailSubscriber});   }
     })
 });
-router.post('/userLogin', passport.authenticate('local'), function(req, res, next) {
-    res.json(req.user);
+router.post('/signin', passport.authenticate('local', { session: false }), function(req, res, next) {
+
+    res.send({ token: tokenForUser(req.user) });
 });
 router.post('/likes',  function(req, res, next) {
     appSchema.likes.create(req.body, function(err, post){

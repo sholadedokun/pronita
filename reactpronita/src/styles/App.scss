@@ -70,6 +70,16 @@ li{
     text-align: left;
     margin:0;
     border-right: 1px solid #555;
+    ul{
+        @extend .nop;
+    }
+    li{
+        display: block;
+        float: none;
+        padding-right: 10px;
+        border-bottom: 1px solid #555;
+        cursor: pointer;
+    }
 }
 
 .App-intro {
