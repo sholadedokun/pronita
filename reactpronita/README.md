@@ -1,10 +1,11 @@
-This project is an assignment for the WARP Job application
+REPO FOR PRONITA : AN APP FOR PRODUCT TESTING
 ## AUTHOR
 OLUSHOLA ADEDOKUN
 
 ## TABLE OF CONTENTS
-- Run the App-header
+- Run the App
 - Technology
+- Developer's Introduction
 - Testing
 - Heroku
 - CI
@@ -17,6 +18,13 @@ OLUSHOLA ADEDOKUN
 ## TECHNOLOGY
 - Front-end implementation: React, Redux
 - APIs implemented        : Google map api, Google place api, Google map geocoding api
+
+## Developer's Introduction
+- Dump Component property description
+    - Icon : all icons used for this app are mostly from front-awesome, therefore, their naming syntax was adpted, below are the property (props) description
+    * icon: suffix of the icon name i.e if icon name is 'fa-star' this property name will only be 'start'
+    * size: size of the icon ranges between: lg, md, sm. default size is sm.
+    * type: incase of special styling, you can include a type that will be directly applied to the class of the icon 
 
 ## Testing
 - Open project directory on command Line

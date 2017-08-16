@@ -6,7 +6,7 @@ import {BrowserRouter as Router,  Route } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import reduxThunk from 'redux-thunk';
-
+import {AUTH_USER} from './actions/actionTypes'
 import './styles/index.css';
 import './styles/App.css';
 
@@ -19,6 +19,7 @@ import Invenotry from './components/inventory';
 import Account from './components/userAccount';
 import Pricing from './components/pricing';
 import Help from './components/help';
+import requireAuth from './components/auth/require_auth';
 import reducers from './reducers';
 
 import {Grid, Row} from 'react-bootstrap';
@@ -27,6 +28,13 @@ import registerServiceWorker from './registerServiceWorker';
 //applying reduxThunk as middleware enabled us to use dispatch from actions
 const createStoreWithMiddleware = applyMiddleware(reduxThunk)(createStore);
 const store = createStoreWithMiddleware(reducers);
+
+const token = localStorage.getItem('PronitaToken');
+// If we have a token, consider the user to be signed in
+if (token) {
+  // we need to update application state
+  store.dispatch({ type: AUTH_USER });
+}
 
 //We can now
 //wrap redux store with our application through the Provider Tag
@@ -40,16 +48,15 @@ ReactDOM.render(
                 <Row>
                     <Header />
                     <Route  exact path="/"  component={Home} />
-                    <Route  path="/signin"  component={Signin} />
-                    <Route  path="/signup"  component={Signup} />
-                    <Route  path="/inventory"  component={Invenotry} />
-                    <Route  path="/account/:id"  component={Account} />
-                    <Route  path="/pricing"  component={Pricing} />
-                    <Route  path="/help"  component={Help} />
+                    <Route  exact path="/signin"  component={Signin} />
+                    <Route  exact path="/signup"  component={Signup} />
+                    <Route  exact path="/inventory"  component={Invenotry} />
+                    <Route  exact path="/userAccount"  component={requireAuth(Account)} />
+                    <Route  exact path="/pricing"  component={Pricing} />
+                    <Route  exact path="/help"  component={Help} />
                 </Row>
             </Grid>
         </Router>
     </Provider>,
-
     document.getElementById('root'));
 registerServiceWorker();

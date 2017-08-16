@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
-import { getLongLat, reverseGeocoding, switcher} from '../actions';
+import { signoutUser} from '../actions/userActions';
 import { connect } from 'react-redux'
-import { Link } from 'react-router-dom';
+import { Link,  } from 'react-router-dom';
 import {Grid, Nav} from 'react-bootstrap';
 
 class Header extends(Component){
@@ -14,14 +14,17 @@ class Header extends(Component){
     componentWillReceiveProps(nextProps){
 
     }
-
+    signoutUser(){
+        this.props.signoutUser()
+        this.props.history.push('/')
+    }
     renderLinks() {
       if (this.props.authenticated) {
         // show a link to sign out
         return [<li className="nav-item">
-          <Link className="nav-link" to="/signout">Sign Out</Link>
+          <a href="" className="nav-link" onClick={this.signoutUser.bind(this)} >Sign Out</a>
         </li>,
-        <li><Link to="/account/">Account</Link></li>]
+        <li><Link to="/userAccount/">Account</Link></li>]
       } else {
         // show a link to sign in or sign up
         return [
@@ -38,7 +41,7 @@ class Header extends(Component){
     render(){
         const { allRestaurants } = this.props
         return(
-            <Grid className="App-header">
+            <Grid fluid={true} className="App-header">
                 <div className="companyName">Pronita</div>
                 <Nav>
                         <li><Link to="/">Home</Link></li>
@@ -54,9 +57,9 @@ class Header extends(Component){
 //to connet to our this component's prop to our state
 function mapStateToProps(state){
     return{
-        authenticate:state.user.authenticate
+        authenticated:state.user.authenticated
     }
 }
-const mapDispatchToProps = {getLongLat, reverseGeocoding, switcher}
+const mapDispatchToProps = { signoutUser}
 //wrapping our connect with the component
 export default connect(mapStateToProps, mapDispatchToProps)(Header)
