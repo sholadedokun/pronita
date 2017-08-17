@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import loading from './HOC/loading'
 import Offer from './offer'
+import {Col} from 'react-bootstrap';
 class Product extends Component{
     render(){
         const {products, noProductMessage} = this.props
@@ -9,10 +10,14 @@ class Product extends Component{
                 <Offer key={item._id} {...item} />
             )
         })
-        console.log(products)
+        console.log(products, allProducts)
         return (
-            products > 0 ? allProducts :
-            <div>{noProductMessage}</div>
+
+
+                    (products && products.length > 0) ? <Col componentClass="ul" xs={12}> {allProducts} </Col>:
+                    <Col xs={12}>{noProductMessage}</Col>
+                
+
         )
 
     }

@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import { signoutUser} from '../actions/userActions';
 import { connect } from 'react-redux'
 import { Link,  } from 'react-router-dom';
-import {Grid, Nav} from 'react-bootstrap';
+import {Grid, Col, Row, Nav} from 'react-bootstrap';
 
 class Header extends(Component){
     constructor(props){
@@ -41,16 +41,18 @@ class Header extends(Component){
     render(){
         const { allRestaurants } = this.props
         return(
-            <Grid fluid={true} className="App-header">
-                <div className="companyName">Pronita</div>
-                <Nav>
-                        <li><Link to="/">Home</Link></li>
-                        <li><Link to="/inventory">inventory</Link></li>
-                        <li><Link to="/pricing">Pricing</Link></li>
-                        <li><Link to="/help">Help</Link></li>
-                        {this.renderLinks()}
-                </Nav>
-            </Grid>
+            <Col xs={12} fluid={true} className="App-header">
+                <Grid>
+                    <div className="companyName">Pronita</div>
+                    <Nav>
+                            <li><Link to="/">Home</Link></li>
+                            <li><Link to="/inventory">inventory</Link></li>
+                            <li><Link to="/pricing">Pricing</Link></li>
+                            <li><Link to="/help">Help</Link></li>
+                            {this.renderLinks()}
+                    </Nav>
+                </Grid>
+            </Col>
         )
     }
 }

@@ -2,7 +2,7 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {fetchRestaurants, loadMore} from '../actions';
-import Restaurant from './restaurant.js';
+import Restaurant from './offer.js';
 import {Grid, Row, Col} from 'react-bootstrap';
 import Button from './button';
 import _ from 'lodash';

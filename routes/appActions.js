@@ -119,7 +119,8 @@ router.get('/logOut', function(req, res, next) {
     res.send(200);
 })
 router.get('/inventory', addFilters, addOrQuery, function(req, res, next) {
-    let toPopulate = req.query.populate || 'productManager inventorySettings'
+    let toPopulate = req.query.populate || ''
+    console.log(req.filters,req.skip,req.limit)
     appSchema.inventory.find(req.filters)
     .skip(req.skip).limit(req.limit)
     .populate(toPopulate)

@@ -10,13 +10,11 @@ import {fetchProduct} from '../actions/userActions'
 class userProfile extends (Component){
     constructor(props){
         super();
+
+        this.setCurrentDisplay=this.setCurrentDisplay.bind(this);
         this.state={
-            currentDisplayedComponent:<ProductContainer noProductMessage={this.state.noProductMessage} products={props.offers} filter="myProduct" />,
-            noProductMessage:
-                <div className="">
-                    {`You've not added a product yet.`}<br />
-                    <a onClick={this.setCurrentDisplay(<Addnew icon="plus" />)}>Add New Product</a>
-                </div>
+            currentDisplayedComponent:<ProductContainer noProductMessage={this.noProductMessage} products={props.offers} filter="myProduct" />,
+
         }
     }
     componentWillMount(nextProps){
@@ -25,16 +23,21 @@ class userProfile extends (Component){
     componentWillUpdate(nextProps){
         if(nextProps.offers !== this.props.offers){
             this.setState({
-                currentDisplayedComponent:<ProductContainer noProductMessage={this.state.noProductMessage} products={nextProps.offers} filter="myProduct" />
+                currentDisplayedComponent:<ProductContainer noProductMessage={this.noProductMessage} products={nextProps.offers} filter="myProduct" />
             })
         }
 
         console.log()
     }
 
-    setCurrentDisplay(){
-
+    setCurrentDisplay(nextDisplay){
+        console.log(nextDisplay);
     }
+    noProductMessage=
+        <div className="">
+            {`You've not added a product yet.`}<br />
+            <a onClick={this.setCurrentDisplay(<Addnew icon="plus" />)}>Add New Product</a>
+        </div>
     renderMenu(){
         let menuList={
             addNew:{
@@ -65,6 +68,7 @@ class userProfile extends (Component){
         )
     }
     render(){
+            // const currentDisplayedComponent = <ProductContainer noProductMessage={this.state.noProductMessage} products={nextProps.offers} filter="myProduct" />
         return(
             <Grid className="newPage">
                 <Row className="">
