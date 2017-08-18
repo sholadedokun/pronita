@@ -1,8 +1,8 @@
 import React from 'react';
 
-export default ({type, icon, size})=>{
-    let className='fa fa-'+icon+(size ? ' '+size: '')+(type ? ' '+type: '')
+export default (props)=>{
+
     return(
-        <span className={className}></span>
+        <span>wehere</span>
     )
 }
