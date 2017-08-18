@@ -51,7 +51,7 @@ ReactDOM.render(
                     <Route  exact path="/signin"  component={Signin} />
                     <Route  exact path="/signup"  component={Signup} />
                     <Route  exact path="/inventory"  component={Invenotry} />
-                    <Route  exact path="/userAccount"  component={requireAuth(Account)} />
+                    <Route  path="/userAccount"  component={requireAuth(Account)} />
                     <Route  exact path="/pricing"  component={Pricing} />
                     <Route  exact path="/help"  component={Help} />
                 </Row>

@@ -1,12 +1,11 @@
 import { combineReducers } from 'redux';
 import { reducer as form } from 'redux-form';
-import restaurantsReducer from './restaurantsReducer';
 import userReducer from './userReducer';
+import inventoryReducer from './inventoryReducer';
 
 const rootReducer = combineReducers({
   form,
-  allRestaurants: restaurantsReducer,
+  inventory: inventoryReducer,
   user:userReducer,
 });
-
 export default rootReducer;

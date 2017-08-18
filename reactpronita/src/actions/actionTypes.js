@@ -1,4 +1,7 @@
-export const FETCH_CITYNAME = 'fetch_cityname';
+//INVENTORY ACTIONS
+export const FETCH_CATEGORIES = 'fetch_categories';
+export const FETCH_SUBCATEGORIES = 'fetch_subcategories';
+
 export const FETCH_CITYNAME_ERROR = 'fetch_cityname_error';
 export const FETCH_AUTOCOMPLETE = 'fetch_autocomplete';
 export const FETCH_AUTOCOMPLETE_ERROR = 'fetch_autocomplete_error';

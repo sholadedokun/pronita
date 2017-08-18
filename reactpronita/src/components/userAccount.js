@@ -23,7 +23,7 @@ class userProfile extends (Component){
             label:'Add a new Product',
             name:'addNew',
             icon:'plus',
-            path: 'add-product',
+            path: '/addProduct',
             component: Addnew
         }
     }
@@ -66,7 +66,7 @@ class userProfile extends (Component){
                             {
                                 _.map(this.menuList, (item, index)=>{
                                     return(
-                                        <Route key={index+item.path} exact={item.exact} path={match.url+item.path} {...this.props}  component={item.component} />
+                                        <Route key={index+item.path} exact={item.exact} path={match.url+item.path}   component={item.component} />
                                     )
                                 })
                             }

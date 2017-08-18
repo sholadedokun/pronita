@@ -3,7 +3,6 @@ import * as userActions from './userActions'
 import _ from 'lodash';
 // import { browserHistory } from 'react-router';
 import {
-  FETCH_CITYNAME,
   FETCH_CITYNAME_ERROR,
   FETCH_AUTOCOMPLETE,
   FETCH_AUTOCOMPLETE_ERROR,
@@ -67,33 +66,6 @@ export function getLongLat(fromAutoFill, fillPosition){
     }
 }
 
-export function reverseGeocoding(position){
-    return function(dispatch) {
-      axios.get(`${SUB_URL_CITYNAME}?key=${API_KEY}&latlng=${position.latitude},${position.longitude}`)
-        .then(response => {
-            if(response.data && response.data.status==='OK'){
-                dispatch({
-                    type: FETCH_CITYNAME,
-                    payload: response.data.results
-                })
-            }
-            else{
-                dispatch({
-                    type: FETCH_CITYNAME_ERROR,
-                    payload: 'Error Fetching User\'s city'
-                });
-            }
-        })
-        .catch(() => {
-          // If request is bad...
-          // - Show an error to the user
-          dispatch({
-              type: FETCH_CITYNAME_ERROR,
-              payload: 'Error Fetching User\'s city'
-          });
-        });
-    }
-}
 export function citynameAutoComplete(input){
 
 
