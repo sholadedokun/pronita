@@ -9,9 +9,9 @@ import {
 export default function(state = {}, action) {
   switch(action.type) {
     case FETCH_CATEGORIES:
-      return { ...state, error: '', categories: action.payload };
+      return { ...state, error: '', allCategories: action.payload };
     case FETCH_SUBCATEGORIES:
-      return { ...state, currentCategory:action.payload.categoryId, subCategories:action.payload.subCategory };
+      return { ...state, currentCategory:action.payload.categoryId, subCategories:action.payload.subCategories };
     case AUTH_ERROR:
       return { ...state, error: action.payload };
     case FETCH_OFFERS:

@@ -12,28 +12,36 @@ const ROOT_URL = 'http://localhost:3000/appActions';
 
 export function fetchAllCategories() {
     return function(dispatch) {
-        axios.get(`${ROOT_URL}/category`)
-            .then(response => {
-                dispatch({ type: FETCH_CATEGORIES,
-                    payload: response.data
-                 });
-            })
-            .catch(() => {
-                dispatch(inventoryError('Error Fetching Categoriee , Please Check your internet and try again.'));
-            });
+        return new Promise( (resolve, reject)=>{
+            axios.get(`${ROOT_URL}/category`)
+                .then(response => {
+                    dispatch({ type: FETCH_CATEGORIES,
+                        payload: response.data
+                     });
+                    resolve()
+                })
+                .catch(() => {
+                    dispatch(inventoryError('Error Fetching Categoriee , Please Check your internet and try again.'));
+                    reject()
+                });
+        })
   }
 }
 export function fetchAllSubCategories(category) {
     return function(dispatch) {
-        axios.get(`${ROOT_URL}/subCategory`, {category})
-            .then(response => {
-                dispatch({ type: FETCH_SUBCATEGORIES,
-                    payload: {categoryId:category, subcategories:response.data}
-                 });
+        return new Promise( (resolve, reject)=>{
+            axios.get(`${ROOT_URL}/subCategory`, {category})
+                .then(response => {
+                    dispatch({ type: FETCH_SUBCATEGORIES,
+                        payload: {categoryId:category, subCategories:response.data}
+                     });
+                     resolve(category)
+                })
+                .catch((e) => {
+                    dispatch(inventoryError('Error Fetching Categoriee , Please Check your internet and try again.'));
+                    reject(e)
+                });
             })
-            .catch(() => {
-                dispatch(inventoryError('Error Fetching Categoriee , Please Check your internet and try again.'));
-            });
         }
 }
 export function inventoryError(error) {

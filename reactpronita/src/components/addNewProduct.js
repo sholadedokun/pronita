@@ -5,24 +5,46 @@ import { Field, reduxForm } from 'redux-form';
 import {connect} from 'react-redux';
 import {fetchAllCategories, fetchAllSubCategories} from '../actions/inventoryActions'
 import Icon from './icon';
+import {renderOption} from './commonFilters'
 
 class AddNewProduct extends Component{
     constructor(){
         super()
-        this.state={}
+        this.state={
+            allCategories:null,
+            currentCategory:null,
+            currentSubcategroies:null
+        }
         this.getSubCategories=this.getSubCategories.bind(this)
     }
     componentWillMount(){
         if(!this.props.allCategories)this.props.fetchAllCategories()
+        .then(response=>
+            this.setState({allCategories: this.props.allCategories
+            })
+        )
     }
     getSubCategories(event){
-        if(!this.props.allSubCategories) this.props.fetchAllSubCategories(event.target.value)
+
+        if(!this.props.subCategories){
+            this.props.fetchAllSubCategories(event.target.value)
+            .then(response=>
+                this.setState({
+                    currentCategory:response,
+                    currentSubcategroies:this.props.subCategories.filter((item)=> item.category._id == response)
+                })
+            )
+        }
         else{
-            this.setState({currentSubcategroies:
-                this.props.allSubCategories.filter()
+            this.setState({
+                currentCategory:event.target.value,
+                currentSubcategroies:  this.props.subCategories.filter((item)=> item.category._id == event.target.value)
+
             })
         }
+
     }
+
     renderInput(field){
         const {meta:{touched, error}} = field;
         const classN= `${ touched && error ? 'inputError':'' }`;
@@ -34,17 +56,10 @@ class AddNewProduct extends Component{
         )
     }
     render(){
-        const {allCategories}=this.props;
-        console.log(allCategories);
-        let categoryOptions=["Please wait, categories is loading"];
-        if(allCategories){
-            allCategories.unshift({_id:0, name:'Please select a category'})
-            categoryOptions=allCategories.map((item, index)=>{
-                return(
-                    <option key={index+item._id} value={item._id}>{item.name}</option>
-                )
-            })
-        }
+
+        let {allCategories, currentSubcategroies}=this.state
+        // let categoryOptions=["Please wait, categories are loading"];
+        // let subCategoryOptions=["Please wait, subCategories are loading"];
         return(
             <Col xs={12} className="addNewProduct">
                 <Heading size="md" title="Add New Product" icon="plus" marginBottom='1em' />
@@ -54,13 +69,13 @@ class AddNewProduct extends Component{
                         <Field component={this.renderInput} type="text" name="title" id="title" placeholder="Name of your product / services" />
                     </div>
                     <div className="field half">
-                        <select name="category" onChange={this.getSubCategories}>
-                            {categoryOptions}
+                        <select name="category" onChange={this.getSubCategories} value={this.state.currentCategory}>
+                            {renderOption(allCategories, '_id', 'name')}
                         </select>
                     </div>
                     <div className="field half">
-                        <select name="subCategory" ref="subCategory" disabled="disabled">
-                            
+                        <select name="subCategory" >
+                            {renderOption(currentSubcategroies, '_id', 'SubCategoryname')}
                         </select>
                     </div>
                 </form>
@@ -99,9 +114,8 @@ function validate(formProps) {
 }
 function mapStateToProps(state) {
   return { errorMessage: state.user.error,
-           allCategories: state.inventory.categories,
-           currentCategory: state.inventory.currentCategory,
-           subCategory: state.inventory.subCategories
+           allCategories: state.inventory.allCategories,
+           subCategories: state.inventory.subCategories
    };
 }
 export default reduxForm({
