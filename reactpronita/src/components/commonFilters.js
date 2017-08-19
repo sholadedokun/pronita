@@ -1,4 +1,5 @@
 import React from 'react';
+import { Field, reduxForm } from 'redux-form';
 import _ from 'lodash';
 
 export function TextLimiter ({value, limit}){
@@ -23,5 +24,34 @@ export function renderOption(allOptions, value, name){
             )
         })
     )
-
+}
+export function renderInput(field){
+    const {meta:{touched, error}} = field;
+    const classN= `${ touched && error ? 'inputError':'' }`;
+    return(
+        <span>
+            <input className={classN}  type={field.type} name={field.name} placeholder={field.placeholder} {...field.input} />
+            <span className='textError'>{touched ? error : ''}</span>
+        </span>
+    )
+}
+export function renderTextarea(field){
+        const {meta:{touched, error}} = field;
+        const classN= `${ touched && error ? 'inputError':'' }`;
+        return(
+            <span>
+                <textarea className={classN}  name={field.name} placeholder={field.placeholder} {...field.input} />
+                <span className='textError'>{touched ? error : ''}</span>
+            </span>
+        )
+    }
+//always remember to bind 'this' whenever this function
+export function renderAlert() {
+  if (this.props.errorMessage) {
+    return (
+      <div className="alert alert-danger">
+        <strong>Oops!</strong> {this.props.errorMessage}
+      </div>
+    );
+  }
 }

@@ -49,7 +49,7 @@ class Home extends (Component){
                     {
                         pagination && pagination.hasNextPage ?
 
-                        <Col xs={10} mdOffset={4} md={4}><Button value="Load More" type="primary" icon='plus' action={this.loadMore.bind(this, allOffers, pagination)} /></Col> : ''
+                        <Col xs={10} mdOffset={4} md={4}><Button value="Load More" type="primary" icon='plus' onClick={this.loadMore.bind(this, allOffers, pagination)} /></Col> : ''
                     }
                 </Row>*/}
             </Grid>

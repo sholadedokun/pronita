@@ -2,34 +2,18 @@ import React, { Component } from 'react';
 import { Field, reduxForm } from 'redux-form';
 import {connect} from 'react-redux';
 import {signupUser} from '../../actions/userActions';
+import {renderInput} from '../commonFilters';
 import {BrowserRouter as Router} from 'react-router-dom'
 
 class Signup extends Component {
 
-    renderInput(field){
-        const {meta:{touched, error}} = field;
-        const classN= `${ touched && error ? 'inputError':'' }`;
-        return(
-            <span>
-                <input className={classN}  type={field.type} name={field.name} placeholder={field.placeholder} {...field.input} />
-                <span className='textError'>{touched ? error : ''}</span>
-            </span>
-        )
-    }
+
     onSubmit(values){
         //call action creators to signup the user...
         this.props.signupUser(values)
         .then(data=> this.props.history.push('/userAccount'))
     }
-  renderAlert() {
-    if (this.props.errorMessage) {
-      return (
-        <div className="alert alert-danger">
-          <strong>Oops!</strong> {this.props.errorMessage}
-        </div>
-      );
-    }
-  }
+
 
   render() {
     const {handleSubmit, errorMessage} = this.props;
@@ -47,19 +31,19 @@ class Signup extends Component {
             </div>
 
             <div className="field half">
-                <Field component={this.renderInput} type="text" name="userName" id="userName" placeholder="User Name" />
+                <Field component={renderInput} type="text" name="userName" id="userName" placeholder="User Name" />
             </div>
             <div className="field half">
-                <Field component={this.renderInput} type="text" name="phoneNumber" id="phoneNumber" placeholder="PhoneNumber" />
+                <Field component={renderInput} type="text" name="phoneNumber" id="phoneNumber" placeholder="PhoneNumber" />
             </div>
             <div className="field half">
-                <Field component={this.renderInput} type="text" name="phoneNumber" id="city" placeholder="city" />
+                <Field component={renderInput} type="text" name="phoneNumber" id="city" placeholder="city" />
             </div>
             <div className="field half">
-                <Field component={this.renderInput} type="password" name="password" id="password" placeholder="Password" />
+                <Field component={renderInput} type="password" name="password" id="password" placeholder="Password" />
             </div>
             <div className="field half">
-                <Field component={this.renderInput} type="password" name="conPassword" id="conPassword" placeholder="confirm Password" />
+                <Field component={renderInput} type="password" name="conPassword" id="conPassword" placeholder="confirm Password" />
             </div>
             {this.renderAlert()}
             <button action="submit" className="btn btn-primary">Sign up!</button>

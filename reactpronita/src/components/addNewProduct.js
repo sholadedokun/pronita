@@ -5,15 +5,19 @@ import { Field, reduxForm } from 'redux-form';
 import {connect} from 'react-redux';
 import {fetchAllCategories, fetchAllSubCategories} from '../actions/inventoryActions'
 import Icon from './icon';
-import {renderOption} from './commonFilters'
+import {renderOption, renderInput, renderTextarea} from './commonFilters'
+import _ from 'lodash';
+import Button from './button'
 
 class AddNewProduct extends Component{
     constructor(){
         super()
         this.state={
             allCategories:null,
-            currentCategory:null,
-            currentSubcategroies:null
+            currentCategory:'',
+            currentSubcategroies:null,
+            keyFeatures:[['text','description']],
+            specifications:[['text','description']]
         }
         this.getSubCategories=this.getSubCategories.bind(this)
     }
@@ -23,6 +27,47 @@ class AddNewProduct extends Component{
             this.setState({allCategories: this.props.allCategories
             })
         )
+    }
+    parseSpecificationJSX(item, index, label ){
+        let allFields=[]
+        for(let field in item){
+            switch(item[field]){
+                case 'text':
+                    allFields.push(<Field key={_.uniqueId()} component={renderInput} type="text" name={`${label}_title_${index}`}  placeholder={`Type ${label} title`} />);
+                    break;
+                case 'description':
+                    allFields.push(<Field key={_.uniqueId()} component={renderTextarea} name={`${label}_description_${index}`}  placeholder={`please describe the ${label} `} rows="7" />);
+                    break;
+            }
+
+        }
+        return allFields
+    }
+    renderSpecifications(specification, label){
+        return(
+            specification.map((item, index )=>
+                {
+                    return(
+                        <div key={_.uniqueId()} className="field">
+                            <div>{label} {index+1}</div>
+                            {
+                                this.parseSpecificationJSX(item, index, label)
+                            }
+
+
+                        </div>
+                    )
+                }
+            )
+        )
+    }
+    addMoreFeatures(type, e){
+        e.preventDefault()
+        let defaultValue = this.state[type][0]
+        let read= [...this.state[type], defaultValue]
+        this.setState({
+            [type]: read
+        })
     }
     getSubCategories(event){
 
@@ -44,17 +89,6 @@ class AddNewProduct extends Component{
         }
 
     }
-
-    renderInput(field){
-        const {meta:{touched, error}} = field;
-        const classN= `${ touched && error ? 'inputError':'' }`;
-        return(
-            <span>
-                <input className={classN}  type={field.type} name={field.name} placeholder={field.placeholder} {...field.input} />
-                <span className='textError'>{touched ? error : ''}</span>
-            </span>
-        )
-    }
     render(){
 
         let {allCategories, currentSubcategroies}=this.state
@@ -63,21 +97,39 @@ class AddNewProduct extends Component{
         return(
             <Col xs={12} className="addNewProduct">
                 <Heading size="md" title="Add New Product" icon="plus" marginBottom='1em' />
-                <Heading size="sm" title="General Details" />
+
                 <form>
-                    <div className="field half">
-                        <Field component={this.renderInput} type="text" name="title" id="title" placeholder="Name of your product / services" />
-                    </div>
-                    <div className="field half">
-                        <select name="category" onChange={this.getSubCategories} value={this.state.currentCategory}>
-                            {renderOption(allCategories, '_id', 'name')}
-                        </select>
-                    </div>
-                    <div className="field half">
-                        <select name="subCategory" >
-                            {renderOption(currentSubcategroies, '_id', 'SubCategoryname')}
-                        </select>
-                    </div>
+                    <Col xs={12}>
+                        <Heading size="sm" title="General Details" />
+                        <div className="field half">
+                            <select name="category" onChange={this.getSubCategories} value={this.state.currentCategory}>
+                                {renderOption(allCategories, '_id', 'name')}
+                            </select>
+                        </div>
+                        <div className="field half">
+                            <select name="subCategory" >
+                                {renderOption(currentSubcategroies, '_id', 'SubCategoryname')}
+                            </select>
+                        </div>
+                        <div className="field half">
+                            <Field component={renderInput} type="text" name="title" id="title" placeholder="Name of your product / services" />
+                        </div>
+                        <div className="field half">
+                            <Field component={renderTextarea} name="productBrief" id="productBrief" placeholder="Give a brief description of your product/service" rows="7" />
+                        </div>
+                    </Col>
+                    <Col xs={12}>
+                        <Heading size="sm" title="Key Features" />
+                            {this.renderSpecifications(this.state.keyFeatures, 'key Features')}
+                            <Button type="primary" icon="plus" value="Add More Key Features" size="sm" onClick={this.addMoreFeatures.bind(this, 'keyFeatures')} />
+                    </Col>
+                    <Col xs={12}>
+                        <Heading size="sm" title="Specifications" />
+                            {this.renderSpecifications(this.state.specifications, 'specifications')}
+                            <Button type="primary" icon="plus" value="Add More Key Specifications" size="sm" onClick={this.addMoreFeatures.bind(this, 'specifications')} />
+                    </Col>
+
+
                 </form>
             </Col>
         )
@@ -88,9 +140,9 @@ function validate(formProps) {
     if (!formProps.title) {
         errors.title = 'Please enter your Product/service Name';
     }
-    // if (!formProps.lastName) {
-    //     errors.lastName = 'Please enter your last Name';
-    // }
+    if (!formProps.productBrief) {
+        errors.productBrief = 'Please enter your product or service Brief';
+    }
     // if (!formProps.userName) {
     //     errors.userName = 'Please enter your user Name';
     // }
