@@ -140,6 +140,22 @@ li{
     background: none;
     outline: none;
 }
+.eachImage{
+    background: #eee;
+    float: left;
+    width: 200px;
+    height: 200px;
+    border: #aaa 1px dashed;
+    text-align: center;
+
+    cursor: pointer;
+    overflow: hidden;
+    .dragSelectImage{
+        padding-top: 80px;
+        width: 100%;
+        float: left
+    }
+}
 .primary{
     background: #009;
     color: #fff;

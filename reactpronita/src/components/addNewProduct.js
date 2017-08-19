@@ -8,6 +8,7 @@ import Icon from './icon';
 import {renderOption, renderInput, renderTextarea} from './commonFilters'
 import _ from 'lodash';
 import Button from './button'
+import Image from './image'
 
 class AddNewProduct extends Component{
     constructor(){
@@ -17,7 +18,11 @@ class AddNewProduct extends Component{
             currentCategory:'',
             currentSubcategroies:null,
             keyFeatures:[['text','description']],
-            specifications:[['text','description']]
+            specifications:[['text','description']],
+            image:[{
+                file:'',
+                previewUrl:''
+            }]
         }
         this.getSubCategories=this.getSubCategories.bind(this)
     }
@@ -126,7 +131,20 @@ class AddNewProduct extends Component{
                     <Col xs={12}>
                         <Heading size="sm" title="Specifications" />
                             {this.renderSpecifications(this.state.specifications, 'specifications')}
-                            <Button type="primary" icon="plus" value="Add More Key Specifications" size="sm" onClick={this.addMoreFeatures.bind(this, 'specifications')} />
+                            <Button type="primary" icon="plus" value="Add More Specifications" size="sm" onClick={this.addMoreFeatures.bind(this, 'specifications')} />
+                    </Col>
+                    <Col xs={12}>
+                        <Heading size="sm" title="Add Product Image" />
+                        <ul className="uploadImage">
+                            <li className="eachImage">
+                                <div className="dragSelectImage">
+                                    <Icon icon="picture-o" size="md" /><br />
+                                    Add <Icon icon="plus"/> by clicking or <br />
+                                    draging an image here.
+                                </div>
+                                <Image />
+                            </li>
+                        </ul>
                     </Col>
 
 
