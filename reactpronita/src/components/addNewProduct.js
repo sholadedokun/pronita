@@ -29,7 +29,30 @@ class AddNewProduct extends Component{
                     file:'',
                     previewUrl:''
                 }
-        ]
+            ],
+            reviewQuestions:{
+                Product:[
+                    {
+                        Question:'',
+                    }
+                ],
+                Design:[
+                    {
+                        Question:'',
+                    }
+                ],
+                "User Interface":[
+                    {
+                        Question:'',
+                    }
+                ],
+                Packaging:[
+                    {
+                        Question:'',
+                    }
+                ]
+
+            }
         }
         this.getSubCategories=this.getSubCategories.bind(this)
     }
@@ -72,7 +95,9 @@ class AddNewProduct extends Component{
         // reader.readAsDataURL(file[0].preview)
     }
 
-
+    setValue(theState){
+        console.log(theState)
+    }
     renderImageInput(){
         return(
             this.state.images.map((item, index)=>{
@@ -107,6 +132,36 @@ class AddNewProduct extends Component{
                                 this.parseSpecificationJSX(item, index, label)
                             }
 
+
+                        </div>
+                    )
+                }
+            )
+        )
+    }
+    renderReviewQuestions(){
+        return(
+            _.map(this.state.reviewQuestions, (item, index )=>
+                {
+                    return(
+                        <div key={_.uniqueId()} className="field">
+                            <div>{index} </div>
+                            {
+                                item.map((questions, numIndex )=>{
+                                    return(
+                                        <Field
+                                            key={_.uniqueId()}
+                                            component={renderTextarea}
+                                            name={`${index}_${numIndex}`}
+                                            placeholder="Please type a brief Question" rows="7"
+                                            onChange={this.setValue.bind(this,'reviewQuestions', 'Question', index, numIndex)}
+                                            value={this.state.reviewQuestions[index][numIndex].Question}
+                                        />
+                                    )
+
+                                })
+
+                            }
 
                         </div>
                     )
@@ -185,6 +240,12 @@ class AddNewProduct extends Component{
                         <Heading size="sm" title="Add Product Image" />
                         <ul className="uploadImage">
                             {this.renderImageInput()}
+                        </ul>
+                    </Col>
+                    <Col xs={12}>
+                        <Heading size="sm" title="Review Questions" />
+                        <ul className="uploadImage">
+                            {this.renderReviewQuestions()}
                         </ul>
                     </Col>
 
