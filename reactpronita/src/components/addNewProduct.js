@@ -9,6 +9,7 @@ import {renderOption, renderInput, renderTextarea} from './commonFilters'
 import _ from 'lodash';
 import Button from './button'
 import Image from './image'
+import Dropzone from 'react-dropzone';
 
 class AddNewProduct extends Component{
     constructor(){
@@ -19,10 +20,16 @@ class AddNewProduct extends Component{
             currentSubcategroies:null,
             keyFeatures:[['text','description']],
             specifications:[['text','description']],
-            image:[{
-                file:'',
-                previewUrl:''
-            }]
+            images:[
+                {
+                    file:'',
+                    previewUrl:''
+                },
+                {
+                    file:'',
+                    previewUrl:''
+                }
+        ]
         }
         this.getSubCategories=this.getSubCategories.bind(this)
     }
@@ -47,6 +54,47 @@ class AddNewProduct extends Component{
 
         }
         return allFields
+    }
+
+    imageUploadManager(index, file){
+        //setImage preview
+        console.log(file[0].preview)
+        let newvalue = [...this.state.images]
+        newvalue[index].previewUrl = file[0].preview
+        this.setState({
+            images: [...newvalue]
+        })
+        // let reader = new FileReader()
+        // reader.onloadend = () => {
+        //
+        //     console.log(index, file, this.state)
+        // }
+        // reader.readAsDataURL(file[0].preview)
+    }
+
+
+    renderImageInput(){
+        return(
+            this.state.images.map((item, index)=>{
+                let imagePreview=(
+                    <Dropzone accept={'image/*'} multiple={false} onDrop={this.imageUploadManager.bind(this, index)} className="dragSelectImage">
+                        <Icon icon="picture-o" size="md" /><br />
+                        Add <Icon icon="plus"/> by clicking or <br />
+                        draging an image here.
+                    </Dropzone>
+                )
+                if(item.previewUrl !== '') imagePreview = <Image src={item.previewUrl} />
+                return(
+                    <li  key={_.uniqueId()} className="eachImage">
+                        {item.previewUrl ?
+                            <img src={item.previewUrl} width="100%" />:
+                            imagePreview
+                        }
+                    </li>
+                )
+            })
+        )
+
     }
     renderSpecifications(specification, label){
         return(
@@ -136,14 +184,7 @@ class AddNewProduct extends Component{
                     <Col xs={12}>
                         <Heading size="sm" title="Add Product Image" />
                         <ul className="uploadImage">
-                            <li className="eachImage">
-                                <div className="dragSelectImage">
-                                    <Icon icon="picture-o" size="md" /><br />
-                                    Add <Icon icon="plus"/> by clicking or <br />
-                                    draging an image here.
-                                </div>
-                                <Image />
-                            </li>
+                            {this.renderImageInput()}
                         </ul>
                     </Col>
 

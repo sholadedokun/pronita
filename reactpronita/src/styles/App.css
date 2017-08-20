@@ -125,6 +125,7 @@ li {
   height: 200px;
   border: #aaa 1px dashed;
   text-align: center;
+  margin-right: 10px;
   cursor: pointer;
   overflow: hidden; }
   .eachImage .dragSelectImage {
