@@ -3,7 +3,7 @@ import Heading from './heading';
 import {Grid, Row, Col} from 'react-bootstrap';
 import { Field, reduxForm } from 'redux-form';
 import {connect} from 'react-redux';
-import {fetchAllCategories, fetchAllSubCategories} from '../actions/inventoryActions'
+import {fetchAllCategories, fetchAllSubCategories, addNewProduct} from '../actions/inventoryActions'
 import Icon from './icon';
 import {renderOption, renderInput, renderTextarea} from './commonFilters'
 import _ from 'lodash';
@@ -17,7 +17,7 @@ class AddNewProduct extends Component{
         this.state={
             allCategories:null,
             currentCategory:'',
-            currentSubcategroies:null,
+            allCurrentSubcategroies:null,
             keyFeatures:[['text','description']],
             specifications:[['text','description']],
             images:[
@@ -33,7 +33,7 @@ class AddNewProduct extends Component{
             reviewQuestions:{
                 Product:[
                     {
-                        Question:'',
+                        Question:'just testing',
                     }
                 ],
                 Design:[
@@ -87,12 +87,6 @@ class AddNewProduct extends Component{
         this.setState({
             images: [...newvalue]
         })
-        // let reader = new FileReader()
-        // reader.onloadend = () => {
-        //
-        //     console.log(index, file, this.state)
-        // }
-        // reader.readAsDataURL(file[0].preview)
     }
 
     setValue(theState){
@@ -131,13 +125,17 @@ class AddNewProduct extends Component{
                             {
                                 this.parseSpecificationJSX(item, index, label)
                             }
-
-
                         </div>
                     )
                 }
             )
         )
+    }
+    addMoreQuestions(index){
+        let newQuestions={...this.state.reviewQuestions}
+        newQuestions[index].push({Questions:''})
+        this.setState({reviewQuestions:newQuestions})
+
     }
     renderReviewQuestions(){
         return(
@@ -155,14 +153,13 @@ class AddNewProduct extends Component{
                                             name={`${index}_${numIndex}`}
                                             placeholder="Please type a brief Question" rows="7"
                                             onChange={this.setValue.bind(this,'reviewQuestions', 'Question', index, numIndex)}
-                                            value={this.state.reviewQuestions[index][numIndex].Question}
+                                            defaultValue={this.state.reviewQuestions[index][numIndex].Question}
                                         />
                                     )
-
                                 })
 
                             }
-
+                            <Button type="primary" icon="plus" value="Add More Questions" size="sm" onClick={this.addMoreQuestions.bind(this, index)} />
                         </div>
                     )
                 }
@@ -184,29 +181,35 @@ class AddNewProduct extends Component{
             .then(response=>
                 this.setState({
                     currentCategory:response,
-                    currentSubcategroies:this.props.subCategories.filter((item)=> item.category._id == response)
+                    allCurrentSubcategroies:this.props.subCategories.filter((item)=> item.category._id == response)
                 })
             )
         }
         else{
             this.setState({
                 currentCategory:event.target.value,
-                currentSubcategroies:  this.props.subCategories.filter((item)=> item.category._id == event.target.value)
+                allCurrentSubcategroies:  this.props.subCategories.filter((item)=> item.category._id == event.target.value)
 
             })
         }
 
     }
+    onSubmit(values){
+        //call action creators to upload the product...
+        this.props.addNewProduct(values, _.pick(this.state, ['images','currentCategory','selectedCategory']))
+        // .then(data=> this.props.history.push('/userAccount'))
+    }
     render(){
 
-        let {allCategories, currentSubcategroies}=this.state
+        let {allCategories, allCurrentSubcategroies}=this.state
+        const {handleSubmit}=this.props;
         // let categoryOptions=["Please wait, categories are loading"];
         // let subCategoryOptions=["Please wait, subCategories are loading"];
         return(
             <Col xs={12} className="addNewProduct">
                 <Heading size="md" title="Add New Product" icon="plus" marginBottom='1em' />
 
-                <form>
+                <form onSubmit={ handleSubmit(this.onSubmit.bind(this)) }>
                     <Col xs={12}>
                         <Heading size="sm" title="General Details" />
                         <div className="field half">
@@ -215,8 +218,8 @@ class AddNewProduct extends Component{
                             </select>
                         </div>
                         <div className="field half">
-                            <select name="subCategory" >
-                                {renderOption(currentSubcategroies, '_id', 'SubCategoryname')}
+                            <select name="subCategory" onChange={(e)=>this.setState({selectedCategory:e.target.value})} >
+                                {renderOption(allCurrentSubcategroies, '_id', 'SubCategoryname')}
                             </select>
                         </div>
                         <div className="field half">
@@ -249,7 +252,7 @@ class AddNewProduct extends Component{
                         </ul>
                     </Col>
 
-
+                    <Button type="primary" action="submit" value="Save" icon="save" />
                 </form>
             </Col>
         )
@@ -294,5 +297,5 @@ export default reduxForm({
     validate,
     form: 'addNewProduct'
 })(
-    connect(mapStateToProps, {fetchAllCategories, fetchAllSubCategories})(AddNewProduct)
+    connect(mapStateToProps, {fetchAllCategories, fetchAllSubCategories, addNewProduct})(AddNewProduct)
 )

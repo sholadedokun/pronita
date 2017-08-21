@@ -40,7 +40,9 @@ export function renderTextarea(field){
         const classN= `${ touched && error ? 'inputError':'' }`;
         return(
             <span>
-                <textarea className={classN}  name={field.name} placeholder={field.placeholder} {...field.input} />
+                <textarea className={classN}  name={field.name} placeholder={field.placeholder} {...field.input}>
+                {field.defaultValue}
+                </textarea>
                 <span className='textError'>{touched ? error : ''}</span>
             </span>
         )

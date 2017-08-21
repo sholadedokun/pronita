@@ -3,6 +3,7 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import {
   FETCH_CATEGORIES,
   FETCH_SUBCATEGORIES,
+  ADD_NEW_PRODUCT,
   UNAUTH_USER,
   AUTH_ERROR,
   FETCH_OFFERS
@@ -51,6 +52,20 @@ export function inventoryError(error) {
   };
 }
 
+export function addNewProduct(document, images){
+    return function(dispatch) {
+        console.log(document, images)
+        // axios.get(`${ROOT_URL}/inventory`, {
+        //     headers: { authorization: localStorage.getItem('PronitaToken') }
+        // })
+        // .then(response => {
+        //     dispatch({
+        //         type: FETCH_OFFERS,
+        //         payload: response.data
+        //     });
+        // });
+    }
+}
 
 
 export function fetchProduct() {
