@@ -3,6 +3,7 @@ import { signoutUser} from '../actions/userActions';
 import { connect } from 'react-redux'
 import { Link,  } from 'react-router-dom';
 import {Grid, Col, Row, Nav} from 'react-bootstrap';
+import _ from 'lodash'
 
 class Header extends(Component){
     constructor(props){
@@ -21,17 +22,19 @@ class Header extends(Component){
     renderLinks() {
       if (this.props.authenticated) {
         // show a link to sign out
-        return [<li className="nav-item">
+        return [
+            <li key={_.uniqueId()} className="nav-item">
           <a href="" className="nav-link" onClick={this.signoutUser.bind(this)} >Sign Out</a>
         </li>,
-        <li><Link to="/userAccount/">Account</Link></li>]
+        <li><Link key={0} to="/userAccount/">Account</Link></li>
+        ]
       } else {
         // show a link to sign in or sign up
         return [
-          <li className="nav-item" key={1}>
+          <li className="nav-item" key={_.uniqueId()}>
             <Link className="nav-link" to="/signin">Sign In</Link>
           </li>,
-          <li className="nav-item" key={2}>
+          <li className="nav-item" key={_.uniqueId()}>
             <Link className="nav-link" to="/signup">Sign Up</Link>
           </li>
         ];
@@ -41,7 +44,7 @@ class Header extends(Component){
     render(){
         const { allRestaurants } = this.props
         return(
-            <Col xs={12} fluid={true} className="App-header">
+            <Col xs={12}  className="App-header">
                 <Grid>
                     <div className="companyName">Pronita</div>
                     <Nav>

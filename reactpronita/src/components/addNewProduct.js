@@ -1,11 +1,11 @@
 import React, {Component} from 'react';
 import Heading from './heading';
 import {Grid, Row, Col} from 'react-bootstrap';
-import { Field, reduxForm } from 'redux-form';
+import { Field, FieldArray, reduxForm } from 'redux-form';
 import {connect} from 'react-redux';
 import {fetchAllCategories, fetchAllSubCategories, addNewProduct} from '../actions/inventoryActions'
 import Icon from './icon';
-import {renderOption, renderInput, renderTextarea} from './commonFilters'
+import {renderOption, renderTextarea} from './commonFilters'
 import _ from 'lodash';
 import Button from './button'
 import Image from './image'
@@ -16,10 +16,14 @@ class AddNewProduct extends Component{
         super()
         this.state={
             allCategories:null,
-            currentCategory:'',
+            category:'',
             allCurrentSubcategroies:null,
-            keyFeatures:[['text','description']],
-            specifications:[['text','description']],
+            keyFeatures:[
+                {title:'test', description:'reset' }
+            ],
+            specifications:[
+                {title:'', description:'' }
+            ],
             images:[
                 {
                     file:'',
@@ -63,22 +67,31 @@ class AddNewProduct extends Component{
             })
         )
     }
-    parseSpecificationJSX(item, index, label ){
-        let allFields=[]
+    parseSpecificationJSX(item, index, label, objectName ){
+        let allFields=[];
         for(let field in item){
-            switch(item[field]){
-                case 'text':
-                    allFields.push(<Field key={_.uniqueId()} component={renderInput} type="text" name={`${label}_title_${index}`}  placeholder={`Type ${label} title`} />);
+            switch(field){
+                case 'title':
+                    allFields.push(<Field key={_.uniqueId()} value={this.state[(objectName || label)][index][field]} component={this.renderInput} onChange={this.updateState.bind(this,[objectName || label], index, field)} type="text" name={`${objectName || label}_title_${index}`}  placeholder={`Type ${label} title`} />);
                     break;
                 case 'description':
-                    allFields.push(<Field key={_.uniqueId()} component={renderTextarea} name={`${label}_description_${index}`}  placeholder={`please describe the ${label} `} rows="7" />);
+                    allFields.push(<Field key={_.uniqueId()} value={this.state[(objectName || label)][index][field]} component={renderTextarea} onChange={this.updateState.bind(this,[objectName || label], index,field)} name={`${objectName || label}_description_${index}`}  placeholder={`please describe the ${label} `} rows="7" />);
                     break;
             }
 
         }
         return allFields
     }
-
+    renderInput(field){
+        const {meta:{touched, error}} = field;
+        const classN= `${ touched && error ? 'inputError':'' }`;
+        return(
+            <span>
+                <input className={classN}  type={field.type} name={field.name} placeholder={field.placeholder} value={field.value} {...field.input} />
+                <span className='textError'>{touched ? error : ''}</span>
+            </span>
+        )
+    }
     imageUploadManager(index, file){
         //setImage preview
         console.log(file[0].preview)
@@ -89,8 +102,22 @@ class AddNewProduct extends Component{
         })
     }
 
-    setValue(theState){
-        console.log(theState)
+    updateState(){
+
+        let stateToChange='';
+        if(arguments.length==6){
+            stateToChange=[...this.state[arguments[0]]];
+            stateToChange[arguments[1]][arguments[2]]=arguments[3].target.value
+        }
+        else{
+            stateToChange={...this.state[arguments[0]]};
+            stateToChange[arguments[1]][arguments[2]][arguments[3]]=arguments[4].target.value
+        }
+        this.setState({
+            [arguments[0]]: stateToChange
+        })
+        // console.log(stateToChange)
+        // console.log( arguments)
     }
     renderImageInput(){
         return(
@@ -115,25 +142,54 @@ class AddNewProduct extends Component{
         )
 
     }
-    renderSpecifications(specification, label){
-        return(
-            specification.map((item, index )=>
-                {
-                    return(
-                        <div key={_.uniqueId()} className="field">
-                            <div>{label} {index+1}</div>
-                            {
-                                this.parseSpecificationJSX(item, index, label)
-                            }
-                        </div>
-                    )
-                }
-            )
-        )
+    renderSpecifications({ fields, meta: {error} }){
+        <ul>
+        <Button type="primary" icon="plus" value={`Add More ${fields.name.trim()}`} size="sm" onClick={()=>fields.push()} />
+        {
+            fields.map((member, index) =>
+                <li key={index}>
+                    <button
+                        type="button"
+                        title="Remove Member"
+                        onClick={() => fields.remove(index)}
+                    />
+                    <h4>
+                        Member #{index + 1}
+                    </h4>
+                    <Field
+                        name={`${member}.firstName`}
+                        type="text"
+                        component={renderField}
+                        label="First Name"
+                    />
+                    <Field
+                        name={`${member}.lastName`}
+                        type="text"
+                        component={renderField}
+                        label="Last Name"
+                    />
+                    <FieldArray name={`${member}.hobbies`} component={renderHobbies} />
+                </li>
+        )}
+        </ul>
+        // return(
+        //     specification.map((item, index )=>
+        //         {
+        //             return(
+        //                 <div key={_.uniqueId()} className="field">
+        //                     <div>{label} {index+1}</div>
+        //                     {
+        //                         this.parseSpecificationJSX(item, index, label, objectName)
+        //                     }
+        //                 </div>
+        //             )
+        //         }
+        //     )
+        // )
     }
     addMoreQuestions(index){
         let newQuestions={...this.state.reviewQuestions}
-        newQuestions[index].push({Questions:''})
+        newQuestions[index].push({Question:''})
         this.setState({reviewQuestions:newQuestions})
 
     }
@@ -152,7 +208,7 @@ class AddNewProduct extends Component{
                                             component={renderTextarea}
                                             name={`${index}_${numIndex}`}
                                             placeholder="Please type a brief Question" rows="7"
-                                            onChange={this.setValue.bind(this,'reviewQuestions', 'Question', index, numIndex)}
+                                            onChange={this.updateState.bind(this,'reviewQuestions', index, numIndex, 'Question' )}
                                             defaultValue={this.state.reviewQuestions[index][numIndex].Question}
                                         />
                                     )
@@ -168,7 +224,7 @@ class AddNewProduct extends Component{
     }
     addMoreFeatures(type, e){
         e.preventDefault()
-        let defaultValue = this.state[type][0]
+        let defaultValue = {title:'', description:'' }
         let read= [...this.state[type], defaultValue]
         this.setState({
             [type]: read
@@ -180,14 +236,14 @@ class AddNewProduct extends Component{
             this.props.fetchAllSubCategories(event.target.value)
             .then(response=>
                 this.setState({
-                    currentCategory:response,
+                    category:response,
                     allCurrentSubcategroies:this.props.subCategories.filter((item)=> item.category._id == response)
                 })
             )
         }
         else{
             this.setState({
-                currentCategory:event.target.value,
+                category:event.target.value,
                 allCurrentSubcategroies:  this.props.subCategories.filter((item)=> item.category._id == event.target.value)
 
             })
@@ -196,7 +252,7 @@ class AddNewProduct extends Component{
     }
     onSubmit(values){
         //call action creators to upload the product...
-        this.props.addNewProduct(values, _.pick(this.state, ['images','currentCategory','selectedCategory']))
+        this.props.addNewProduct(_.assign(_.pick(values, ['name', 'description']), (_.omit(this.state, ['allCategories','allCurrentSubcategroies', ]))))
         // .then(data=> this.props.history.push('/userAccount'))
     }
     render(){
@@ -213,7 +269,7 @@ class AddNewProduct extends Component{
                     <Col xs={12}>
                         <Heading size="sm" title="General Details" />
                         <div className="field half">
-                            <select name="category" onChange={this.getSubCategories} value={this.state.currentCategory}>
+                            <select name="category" onChange={this.getSubCategories} value={this.state.category}>
                                 {renderOption(allCategories, '_id', 'name')}
                             </select>
                         </div>
@@ -223,21 +279,23 @@ class AddNewProduct extends Component{
                             </select>
                         </div>
                         <div className="field half">
-                            <Field component={renderInput} type="text" name="title" id="title" placeholder="Name of your product / services" />
+                            <Field component={this.renderInput} type="text" name="name" id="name" placeholder="Name of your product / services" />
                         </div>
                         <div className="field half">
-                            <Field component={renderTextarea} name="productBrief" id="productBrief" placeholder="Give a brief description of your product/service" rows="7" />
+                            <Field component={renderTextarea} name="description" id="description" placeholder="Give a brief description of your product/service" rows="7" />
                         </div>
                     </Col>
                     <Col xs={12}>
                         <Heading size="sm" title="Key Features" />
-                            {this.renderSpecifications(this.state.keyFeatures, 'key Features')}
-                            <Button type="primary" icon="plus" value="Add More Key Features" size="sm" onClick={this.addMoreFeatures.bind(this, 'keyFeatures')} />
+                            <FieldArray name="key Features" component={this.renderSpecifications} />
+                            {/*{this.renderSpecifications(this.state.keyFeatures, 'key Features', 'keyFeatures')}
+                            <Button type="primary" icon="plus" value="Add More Key Features" size="sm" onClick={this.addMoreFeatures.bind(this, 'keyFeatures')} />*/}
                     </Col>
                     <Col xs={12}>
                         <Heading size="sm" title="Specifications" />
-                            {this.renderSpecifications(this.state.specifications, 'specifications')}
-                            <Button type="primary" icon="plus" value="Add More Specifications" size="sm" onClick={this.addMoreFeatures.bind(this, 'specifications')} />
+                            <FieldArray name="specifications" label="specifications" content={this.state.specifications} component={this.renderSpecifications} />
+                            {/*{this.renderSpecifications(this.state.specifications, 'specifications')}
+                            <Button type="primary" icon="plus" value="Add More Specifications" size="sm" onClick={this.addMoreFeatures.bind(this, 'specifications')} />*/}
                     </Col>
                     <Col xs={12}>
                         <Heading size="sm" title="Add Product Image" />

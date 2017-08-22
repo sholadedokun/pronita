@@ -30,7 +30,7 @@ export function renderInput(field){
     const classN= `${ touched && error ? 'inputError':'' }`;
     return(
         <span>
-            <input className={classN}  type={field.type} name={field.name} placeholder={field.placeholder} {...field.input} />
+            <input className={classN}  type={field.type} name={field.name} placeholder={field.placeholder} value={field.value} {...field.input} />
             <span className='textError'>{touched ? error : ''}</span>
         </span>
     )

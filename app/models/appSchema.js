@@ -27,12 +27,19 @@ var inventorySchema= new Schema({
     dateCreated:{ type: Date, default: Date.now },
     lastUpdated:{ type: Date, default: Date.now }
 });
+var reviewQuestionsSchema= new Schema({
+    title: String,
+    questionText: String,
+    inventoryId:{type:Schema.Types.ObjectId, ref:'inventory'},
+    dateCreated:{type: Date, default: Date.now}
+});
 var keyFeaturesSchema= new Schema({
     title: String,
     description: String,
     inventoryId:{type:Schema.Types.ObjectId, ref:'inventory'},
     dateCreated:{type: Date, default: Date.now}
 });
+
 var specificationSchema= new Schema({
     title: String,
     description: String,
@@ -99,7 +106,6 @@ var userSchema= new Schema({
 
 userSchema.pre('save', function(next) {
     var user = this;
-
     // only hash the password if it has been modified (or is new)
     if (!user.isModified('password')) return next();
 
@@ -140,6 +146,7 @@ module.exports.inventory = mongoose.model('inventory', inventorySchema);
 module.exports.category= mongoose.model('category', categorySchema);
 module.exports.subcategory= mongoose.model('subcategory', subCategorySchema);
 module.exports.inventorySettings = mongoose.model('inventorySettings', inventorySettingsSchema);
+module.exports.reviewQuestions = mongoose.model('reviewQuestions', reviewQuestionsSchema);
 module.exports.user = mongoose.model('user', userSchema);
 module.exports.tags = mongoose.model('tags', tagSchema);
 module.exports.emailSubscriber = mongoose.model('emailSubscriber', emailSubscriberSchema);

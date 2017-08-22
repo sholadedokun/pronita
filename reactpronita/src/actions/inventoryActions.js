@@ -52,9 +52,13 @@ export function inventoryError(error) {
   };
 }
 
-export function addNewProduct(document, images){
+export function addNewProduct(document){
+    //re-arrange the objects
+    // let objectToSend = _.omit()
+
     return function(dispatch) {
-        console.log(document, images)
+
+        console.log(document)
         // axios.get(`${ROOT_URL}/inventory`, {
         //     headers: { authorization: localStorage.getItem('PronitaToken') }
         // })
