@@ -34,29 +34,12 @@ class AddNewProduct extends Component{
                     previewUrl:''
                 }
             ],
-            reviewQuestions:{
-                Product:[
-                    {
-                        Question:'just testing',
-                    }
-                ],
-                Design:[
-                    {
-                        Question:'',
-                    }
-                ],
-                "User Interface":[
-                    {
-                        Question:'',
-                    }
-                ],
-                Packaging:[
-                    {
-                        Question:'',
-                    }
-                ]
-
-            }
+            reviewQuestions:[
+                "Product",
+                "Design",
+                "User Interface",
+                "Packaging"
+            ]
         }
         this.getSubCategories=this.getSubCategories.bind(this)
     }
@@ -128,6 +111,7 @@ class AddNewProduct extends Component{
                         Add <Icon icon="plus"/> by clicking or <br />
                         draging an image here.
                     </Dropzone>
+
                 )
                 if(item.previewUrl !== '') imagePreview = <Image src={item.previewUrl} />
                 return(
@@ -143,35 +127,37 @@ class AddNewProduct extends Component{
 
     }
     renderSpecifications({ fields, meta: {error} }){
-        <ul>
-        <Button type="primary" icon="plus" value={`Add More ${fields.name.trim()}`} size="sm" onClick={()=>fields.push()} />
-        {
-            fields.map((member, index) =>
-                <li key={index}>
-                    <button
-                        type="button"
-                        title="Remove Member"
-                        onClick={() => fields.remove(index)}
-                    />
-                    <h4>
-                        Member #{index + 1}
-                    </h4>
-                    <Field
-                        name={`${member}.firstName`}
-                        type="text"
-                        component={renderField}
-                        label="First Name"
-                    />
-                    <Field
-                        name={`${member}.lastName`}
-                        type="text"
-                        component={renderField}
-                        label="Last Name"
-                    />
-                    <FieldArray name={`${member}.hobbies`} component={renderHobbies} />
-                </li>
-        )}
-        </ul>
+        return(
+        <div>
+            <ul>
+
+                {
+                    fields.map((member, index) =>
+                        <li key={index}>
+
+                            <h4>
+                                {fields.name} #{index + 1}
+                            </h4>
+                            <Field
+                                name={`${member}.title`}
+                                type="text"
+                                component={this.renderInput}
+                                label="First Name"
+                            />
+                            <Field name={`${member}.description`} component={renderTextarea} />
+                            <button
+                                type="button"
+                                title={`Remove ${fields.name}`}
+                                onClick={() => fields.remove(index)}
+                            >
+                            Delete
+                            </button>
+                        </li>
+                )}
+                <Button type="primary" icon="plus" value={`Add ${fields.length>0?'More': ''} ${fields.name}`} size="sm" onClick={()=>fields.push()} />
+            </ul>
+        </div>
+        )
         // return(
         //     specification.map((item, index )=>
         //         {
@@ -187,10 +173,29 @@ class AddNewProduct extends Component{
         //     )
         // )
     }
-    addMoreQuestions(index){
-        let newQuestions={...this.state.reviewQuestions}
-        newQuestions[index].push({Question:''})
-        this.setState({reviewQuestions:newQuestions})
+    addMoreQuestions({ fields, meta: {error} }){
+        return(
+            <ul>
+                {
+                    fields.map((member, index)=>
+                    <li key={_.uniqueId()}>
+                        <h4>{fields.name} {index+1}</h4>
+                        <Field
+
+                            component={renderTextarea}
+                            name={member}
+                            placeholder="Please type a brief Question" rows="7"
+                        />
+                        <button type="button" title={`Remove ${member} ${index +1}`} onClick={()=>fields.remove(index)}>remove</button>
+                    </li>
+                    )
+                }
+                <Button type="primary" icon="plus" value="Add More Questions" size="sm" onClick={()=>fields.push()} />
+            </ul>
+
+        )
+
+
 
     }
     renderReviewQuestions(){
@@ -199,23 +204,11 @@ class AddNewProduct extends Component{
                 {
                     return(
                         <div key={_.uniqueId()} className="field">
-                            <div>{index} </div>
-                            {
-                                item.map((questions, numIndex )=>{
-                                    return(
-                                        <Field
-                                            key={_.uniqueId()}
-                                            component={renderTextarea}
-                                            name={`${index}_${numIndex}`}
-                                            placeholder="Please type a brief Question" rows="7"
-                                            onChange={this.updateState.bind(this,'reviewQuestions', index, numIndex, 'Question' )}
-                                            defaultValue={this.state.reviewQuestions[index][numIndex].Question}
-                                        />
-                                    )
-                                })
-
-                            }
-                            <Button type="primary" icon="plus" value="Add More Questions" size="sm" onClick={this.addMoreQuestions.bind(this, index)} />
+                            <div>{item} </div>
+                            <FieldArray
+                                name={item}
+                                component={this.addMoreQuestions.bind(this)}
+                            />
                         </div>
                     )
                 }
@@ -252,6 +245,7 @@ class AddNewProduct extends Component{
     }
     onSubmit(values){
         //call action creators to upload the product...
+        console.log(values)
         this.props.addNewProduct(_.assign(_.pick(values, ['name', 'description']), (_.omit(this.state, ['allCategories','allCurrentSubcategroies', ]))))
         // .then(data=> this.props.history.push('/userAccount'))
     }
@@ -279,21 +273,21 @@ class AddNewProduct extends Component{
                             </select>
                         </div>
                         <div className="field half">
-                            <Field component={this.renderInput} type="text" name="name" id="name" placeholder="Name of your product / services" />
+                            <Field component={this.renderInput} type="text" name="name" placeholder="Name of your product / services" />
                         </div>
                         <div className="field half">
-                            <Field component={renderTextarea} name="description" id="description" placeholder="Give a brief description of your product/service" rows="7" />
+                            <Field component={renderTextarea} name="description" placeholder="Give a brief description of your product/service" rows="7" />
                         </div>
                     </Col>
                     <Col xs={12}>
                         <Heading size="sm" title="Key Features" />
-                            <FieldArray name="key Features" component={this.renderSpecifications} />
+                            <FieldArray name="key Features" component={this.renderSpecifications.bind(this)} />
                             {/*{this.renderSpecifications(this.state.keyFeatures, 'key Features', 'keyFeatures')}
                             <Button type="primary" icon="plus" value="Add More Key Features" size="sm" onClick={this.addMoreFeatures.bind(this, 'keyFeatures')} />*/}
                     </Col>
                     <Col xs={12}>
                         <Heading size="sm" title="Specifications" />
-                            <FieldArray name="specifications" label="specifications" content={this.state.specifications} component={this.renderSpecifications} />
+                            <FieldArray name="specifications" component={this.renderSpecifications.bind(this)} />
                             {/*{this.renderSpecifications(this.state.specifications, 'specifications')}
                             <Button type="primary" icon="plus" value="Add More Specifications" size="sm" onClick={this.addMoreFeatures.bind(this, 'specifications')} />*/}
                     </Col>
@@ -318,11 +312,11 @@ class AddNewProduct extends Component{
 }
 function validate(formProps) {
     const errors = {};
-    if (!formProps.title) {
-        errors.title = 'Please enter your Product/service Name';
+    if (!formProps.name) {
+        errors.name = 'Please enter your Product/service Name';
     }
-    if (!formProps.productBrief) {
-        errors.productBrief = 'Please enter your product or service Brief';
+    if (!formProps.description) {
+        errors.description = 'Please enter your product or service Brief';
     }
     // if (!formProps.userName) {
     //     errors.userName = 'Please enter your user Name';
