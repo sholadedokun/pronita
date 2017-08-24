@@ -46,7 +46,7 @@ ReactDOM.render(
         <Router>
             <Grid fluid={true} className="App nop">
                 <Row>
-                    <Header />
+                    <Header title="Pronita" />
                     <Route  exact path="/"  component={Home} />
                     <Route  exact path="/signin"  component={Signin} />
                     <Route  exact path="/signup"  component={Signup} />

@@ -7,6 +7,7 @@ var bodyParser = require('body-parser');
 var nodemailer = require('nodemailer');
 var expressSession = require('express-session');
 var passport = require('passport')
+var _ = require("lodash")
 const cors = require('cors');
     // var MongoStore= require('connect-mongo')(expressSession);
 
@@ -19,7 +20,7 @@ var storage = multer.diskStorage({
     filename: function(req, file, cb) {
         var newname = file.originalname.split('.')
         var ext = newname[newname.length - 1];
-        cb(null, newname[0] + '_' + Date.now() + '.' + ext)
+        cb(null, _.uniqueId()+ '_' + Date.now() + '.' + ext)
     }
 });
 
@@ -33,8 +34,8 @@ var appActions = require('./routes/appActions');
 //mongoose configurations
 var mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
-mongoose.connect('mongodb://localhost/pronitaexpress-development')
-// mongoose.connect('mongodb://pronitadb:pronitadb@ds157631.mlab.com:57631/pronitadb')
+// mongoose.connect('mongodb://localhost/pronitaexpress-development')
+mongoose.connect('mongodb://pronitadb:pronitadb@ds157631.mlab.com:57631/pronitadb')
     .then(() => console.log('database connected'))
     .catch((err) => console.error(err))
 
@@ -59,14 +60,8 @@ server.listen(port, function() {
     console.log('listening on *: ' + port);
 
 });
+app.use(cors());
 
-//upload files
-app.post('/upload', function(req, res, next) {
-    upload(req, res, function(err) {
-        if (err) res.json('no images :' + err)
-        res.json(req.files)
-    })
-})
 
 // view engine setup
 app.set('views', path.join(__dirname, 'app/views'));
@@ -91,7 +86,13 @@ app.use(express.static(path.join(__dirname, 'reactpronita')));
 app.use(express.static(path.join(__dirname, '/')));
 
 //app.use(fileupload());
-app.use(cors());
+//upload files
+app.post('/upload', function(req, res, next) {
+    upload(req, res, function(err) {
+        if (err) res.json('no images :' + err)
+        res.json(req.files)
+    })
+})
 app.use('/', routes);
 app.use('/adminActions', adminActions);
 app.use('/appActions', appActions);

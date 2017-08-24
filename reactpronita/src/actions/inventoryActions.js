@@ -8,7 +8,7 @@ import {
   AUTH_ERROR,
   FETCH_OFFERS
 } from './actionTypes';
-
+import _ from "lodash";
 const ROOT_URL = 'http://localhost:3000/appActions';
 
 export function fetchAllCategories() {
@@ -55,23 +55,28 @@ export function inventoryError(error) {
 export function addNewProduct(document){
     //re-arrange the objects
     // let objectToSend = _.omit()
-
+    console.log(document)
     return function(dispatch) {
-
-        console.log(document)
-        // axios.get(`${ROOT_URL}/inventory`, {
-        //     headers: { authorization: localStorage.getItem('PronitaToken') }
-        // })
-        // .then(response => {
-        //     dispatch({
-        //         type: FETCH_OFFERS,
-        //         payload: response.data
-        //     });
-        // });
+        var file = new FormData()
+        for(var image in document.file){
+            file.append('files', document.file[image])
+        }
+        console.log(file)
+        axios.post("http://localhost:3000/upload", file, {
+            headers: {
+                authorization: localStorage.getItem('PronitaToken'),
+                'Content-Type':  `multipart/form-data`
+            }
+        })
+        .then(response => {
+            // dispatch({
+            //     type: FETCH_OFFERS,
+            //     payload: response.data
+            // });
+            console.log(response)
+        });
     }
 }
-
-
 export function fetchProduct() {
     return function(dispatch) {
         axios.get(`${ROOT_URL}/inventory`, {

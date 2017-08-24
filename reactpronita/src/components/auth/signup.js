@@ -7,13 +7,11 @@ import {BrowserRouter as Router} from 'react-router-dom'
 
 class Signup extends Component {
 
-
     onSubmit(values){
         //call action creators to signup the user...
         this.props.signupUser(values)
         .then(data=> this.props.history.push('/userAccount'))
     }
-
 
   render() {
     const {handleSubmit, errorMessage} = this.props;

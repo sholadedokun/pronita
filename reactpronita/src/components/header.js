@@ -42,11 +42,11 @@ class Header extends(Component){
     }
 
     render(){
-        const { allRestaurants } = this.props
+        const { allRestaurants, title } = this.props 
         return(
             <Col xs={12}  className="App-header">
                 <Grid>
-                    <div className="companyName">Pronita</div>
+                    <div className="companyName">{title}</div>
                     <Nav>
                             <li><Link to="/">Home</Link></li>
                             <li><Link to="/inventory">inventory</Link></li>

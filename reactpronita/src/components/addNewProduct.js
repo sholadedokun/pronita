@@ -34,6 +34,7 @@ class AddNewProduct extends Component{
                     previewUrl:''
                 }
             ],
+            file:[],
             reviewQuestions:[
                 "Product",
                 "Design",
@@ -77,11 +78,13 @@ class AddNewProduct extends Component{
     }
     imageUploadManager(index, file){
         //setImage preview
-        console.log(file[0].preview)
+
+        let newfile= [...this.state.file , file[0]]
         let newvalue = [...this.state.images]
         newvalue[index].previewUrl = file[0].preview
+        newvalue[index].file= file[0].name
         this.setState({
-            images: [...newvalue]
+            images: [...newvalue], file:newfile
         })
     }
 
@@ -154,7 +157,7 @@ class AddNewProduct extends Component{
                             </button>
                         </li>
                 )}
-                <Button type="primary" icon="plus" value={`Add ${fields.length>0?'More': ''} ${fields.name}`} size="sm" onClick={()=>fields.push()} />
+                <button type="button" className="button primary sm" onClick={(e)=>fields.push()}><Icon icon="plus" />{`Add ${fields.length>0?'More': ''} ${fields.name}`}</button>
             </ul>
         </div>
         )
@@ -190,26 +193,23 @@ class AddNewProduct extends Component{
                     </li>
                     )
                 }
-                <Button type="primary" icon="plus" value="Add More Questions" size="sm" onClick={()=>fields.push()} />
+                <button type="button" className="button primary sm"  onClick={()=>fields.push()}><Icon icon="plus" />Add More Question</button>
             </ul>
 
         )
-
-
-
     }
     renderReviewQuestions(){
         return(
             _.map(this.state.reviewQuestions, (item, index )=>
                 {
                     return(
-                        <div key={_.uniqueId()} className="field">
-                            <div>{item} </div>
+                        <li key={_.uniqueId()} className="field">
+                            <Col xs={12} >{item} </Col>
                             <FieldArray
                                 name={item}
                                 component={this.addMoreQuestions.bind(this)}
                             />
-                        </div>
+                        </li>
                     )
                 }
             )
@@ -293,18 +293,18 @@ class AddNewProduct extends Component{
                     </Col>
                     <Col xs={12}>
                         <Heading size="sm" title="Add Product Image" />
-                        <ul className="uploadImage">
+                        <ul className="">
                             {this.renderImageInput()}
                         </ul>
                     </Col>
                     <Col xs={12}>
                         <Heading size="sm" title="Review Questions" />
-                        <ul className="uploadImage">
+                        <ul className="">
                             {this.renderReviewQuestions()}
                         </ul>
                     </Col>
 
-                    <Button type="primary" action="submit" value="Save" icon="save" />
+                    <input type="submit" value="Save" icon="save" />
                 </form>
             </Col>
         )
@@ -337,7 +337,7 @@ function validate(formProps) {
     //     errors.password = 'Passwords must match';
     // }
 
-    return errors;
+    // return errors;
 }
 function mapStateToProps(state) {
   return { errorMessage: state.user.error,
