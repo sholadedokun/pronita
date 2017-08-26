@@ -54,14 +54,15 @@ export function inventoryError(error) {
 
 export function addNewProduct(document){
     //re-arrange the objects
-    // let objectToSend = _.omit()
     console.log(document)
+
     return function(dispatch) {
+        //turn the images to a formData
         var file = new FormData()
         for(var image in document.file){
             file.append('files', document.file[image])
         }
-        console.log(file)
+        //lets first send the pictures and related files
         axios.post("http://localhost:3000/upload", file, {
             headers: {
                 authorization: localStorage.getItem('PronitaToken'),
@@ -69,11 +70,19 @@ export function addNewProduct(document){
             }
         })
         .then(response => {
+            let allImages=response.data.map((item)=>{
+                return(
+                    item.filename
+                )
+            })
+            let others = _.pick(document, ['keyFeatures', 'specifications'])
+            let inventory = {..._.omit(document, ['keyFeatures', 'specifications', 'file', 'images', ]), allImages, others}
+            console.log(inventory)
             // dispatch({
             //     type: FETCH_OFFERS,
             //     payload: response.data
             // });
-            console.log(response)
+            // console.log(response)
         });
     }
 }

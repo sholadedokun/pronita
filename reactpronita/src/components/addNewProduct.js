@@ -19,7 +19,7 @@ class AddNewProduct extends Component{
             category:'',
             allCurrentSubcategroies:null,
             keyFeatures:[
-                {title:'test', description:'reset' }
+                {title:'', description:'' }
             ],
             specifications:[
                 {title:'', description:'' }
@@ -71,14 +71,13 @@ class AddNewProduct extends Component{
         const classN= `${ touched && error ? 'inputError':'' }`;
         return(
             <span>
-                <input className={classN}  type={field.type} name={field.name} placeholder={field.placeholder} value={field.value} {...field.input} />
+                <input className={classN}  type={field.type} name={field.name.replace(' ', '')} placeholder={field.placeholder} value={field.value} {...field.input} />
                 <span className='textError'>{touched ? error : ''}</span>
             </span>
         )
     }
-    imageUploadManager(index, file){
+    imageUploadManager(index, file, ){
         //setImage preview
-
         let newfile= [...this.state.file , file[0]]
         let newvalue = [...this.state.images]
         newvalue[index].previewUrl = file[0].preview
@@ -105,6 +104,9 @@ class AddNewProduct extends Component{
         // console.log(stateToChange)
         // console.log( arguments)
     }
+    removeImage(index){
+        console.log(index)
+    }
     renderImageInput(){
         return(
             this.state.images.map((item, index)=>{
@@ -122,6 +124,16 @@ class AddNewProduct extends Component{
                         {item.previewUrl ?
                             <img src={item.previewUrl} width="100%" />:
                             imagePreview
+                        }
+                        {
+                            item.ImageInfo ?
+                                <div>
+                                    <span>{item.ImageInfo}</span>
+                                    {item.ImageCrop?<span>CROP</span> : ''}
+                                </div>:''
+                        }
+                        {item.previewUrl ?
+                            <Icon icon="trash-o" onClick={this.removeImage(index)} />:''
                         }
                     </li>
                 )
@@ -245,8 +257,7 @@ class AddNewProduct extends Component{
     }
     onSubmit(values){
         //call action creators to upload the product...
-        console.log(values)
-        this.props.addNewProduct(_.assign(_.pick(values, ['name', 'description']), (_.omit(this.state, ['allCategories','allCurrentSubcategroies', ]))))
+        this.props.addNewProduct(_.assign(values, (_.omit(this.state, ['allCategories','allCurrentSubcategroies', ]))))
         // .then(data=> this.props.history.push('/userAccount'))
     }
     render(){
