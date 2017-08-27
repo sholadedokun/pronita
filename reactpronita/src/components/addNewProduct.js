@@ -18,12 +18,7 @@ class AddNewProduct extends Component{
             allCategories:null,
             category:'',
             allCurrentSubcategroies:null,
-            keyFeatures:[
-                {title:'', description:'' }
-            ],
-            specifications:[
-                {title:'', description:'' }
-            ],
+            selectedCategory:'',
             images:[
                 {
                     file:'',
@@ -69,9 +64,10 @@ class AddNewProduct extends Component{
     renderInput(field){
         const {meta:{touched, error}} = field;
         const classN= `${ touched && error ? 'inputError':'' }`;
+        field.input.name= field.input.name.replace(' ', '')
         return(
             <span>
-                <input className={classN}  type={field.type} name={field.name.replace(' ', '')} placeholder={field.placeholder} value={field.value} {...field.input} />
+                <input className={classN}  type={field.type} placeholder={field.placeholder}  {...field.input} />
                 <span className='textError'>{touched ? error : ''}</span>
             </span>
         )
@@ -257,7 +253,7 @@ class AddNewProduct extends Component{
     }
     onSubmit(values){
         //call action creators to upload the product...
-        this.props.addNewProduct(_.assign(values, (_.omit(this.state, ['allCategories','allCurrentSubcategroies', ]))))
+        this.props.addNewProduct(_.assign(values, (_.omit(this.state, ['allCategories','allCurrentSubcategroies', 'reviewQuestions' ]))))
         // .then(data=> this.props.history.push('/userAccount'))
     }
     render(){
@@ -279,7 +275,7 @@ class AddNewProduct extends Component{
                             </select>
                         </div>
                         <div className="field half">
-                            <select name="subCategory" onChange={(e)=>this.setState({selectedCategory:e.target.value})} >
+                            <select name="subCategory" onChange={(e)=>this.setState({subCategory:e.target.value})}   value={this.state.subCategory}>
                                 {renderOption(allCurrentSubcategroies, '_id', 'SubCategoryname')}
                             </select>
                         </div>

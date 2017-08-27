@@ -75,8 +75,9 @@ export function addNewProduct(document){
                     item.filename
                 )
             })
-            let others = _.pick(document, ['keyFeatures', 'specifications'])
-            let inventory = {..._.omit(document, ['keyFeatures', 'specifications', 'file', 'images', ]), allImages, others}
+            let others = _.pick(document, ['key Features', 'specifications'])
+            let reviewQuestions = _.pick(document, ["Product","Design","User Interface","Packaging"])
+            let inventory = {..._.pick(document, ['name', 'description', 'category', 'subCategory' ]), allImages, others, reviewQuestions}
             console.log(inventory)
             // dispatch({
             //     type: FETCH_OFFERS,
