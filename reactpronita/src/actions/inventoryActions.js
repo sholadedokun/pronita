@@ -70,15 +70,35 @@ export function addNewProduct(document){
             }
         })
         .then(response => {
-            let allImages=response.data.map((item)=>{
+            let allPic=response.data.map((item)=>{
                 return(
                     item.filename
                 )
             })
-            let others = _.pick(document, ['key Features', 'specifications'])
+            let profilePic = allPic[0]
+            let Features = _.pick(document, ['key Features', 'specifications'])
+            var others = _.map(Features, (item, key)=> {
+                return {
+                    title:key,
+                    value:item
+                }
+            })
+            console.log(others)
             let reviewQuestions = _.pick(document, ["Product","Design","User Interface","Packaging"])
-            let inventory = {..._.pick(document, ['name', 'description', 'category', 'subCategory' ]), allImages, others, reviewQuestions}
-            console.log(inventory)
+            let inventory = {..._.pick(document, ['name', 'description', 'category', 'subCategory' ]), allPic, profilePic, others, reviewQuestions}
+            axios.post(`${ROOT_URL}/inventory`, inventory)
+                .then(response => {
+                    dispatch({ type: ADD_NEW_PRODUCT,
+                        payload: response.data
+                     });
+                    //  resolve(response)
+                })
+                .catch((e) => {
+                    dispatch(inventoryError('Error Fetching Categoriee , Please Check your internet and try again.'));
+                    // reject(e)
+                });
+
+            // console.log(inventory)
             // dispatch({
             //     type: FETCH_OFFERS,
             //     payload: response.data

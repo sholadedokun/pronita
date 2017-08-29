@@ -1,6 +1,7 @@
 import {
   FETCH_CATEGORIES,
   FETCH_SUBCATEGORIES,
+  ADD_NEW_PRODUCT,
   UNAUTH_USER,
   AUTH_ERROR,
   FETCH_OFFERS
@@ -12,11 +13,10 @@ export default function(state = {}, action) {
       return { ...state, error: '', allCategories: action.payload };
     case FETCH_SUBCATEGORIES:
       return { ...state, currentCategory:action.payload.categoryId, subCategories:action.payload.subCategories };
-    case AUTH_ERROR:
-      return { ...state, error: action.payload };
+    case ADD_NEW_PRODUCT:
+      return { ...state, error:'', product:action.payload };
     case FETCH_OFFERS:
       return { ...state, products:action.payload };
   }
-
   return state;
 }

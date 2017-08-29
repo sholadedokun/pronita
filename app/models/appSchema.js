@@ -6,7 +6,7 @@ var inventorySchema= new Schema({
     category: {type:Schema.Types.ObjectId,  ref:'category'},
     subCategory:{type:Schema.Types.ObjectId, ref:'subcategory'},
     productManager:{type:Schema.Types.ObjectId, ref:'user'},
-    type:{type:String, required:true},
+    // type:{type:String, required:true},
     name:{type:String, required:true},
     description:{type:String, required:true},
     address:String,
@@ -29,7 +29,7 @@ var inventorySchema= new Schema({
 });
 var reviewQuestionsSchema= new Schema({
     title: String,
-    questionText: String,
+    questionText: Array,
     inventoryId:{type:Schema.Types.ObjectId, ref:'inventory'},
     dateCreated:{type: Date, default: Date.now}
 });

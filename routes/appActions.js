@@ -233,6 +233,7 @@ router.post('/inventory',  function(req, res, next){
             inventoryExtra=req.body.others
             //take out the first feature enrty in the array
             features=inventoryExtra.shift()
+            features.title = features.title.replace(' ', '')
             nextFeatures(features)
             function nextFeatures(Features){
 
