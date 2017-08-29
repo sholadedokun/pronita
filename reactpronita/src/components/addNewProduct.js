@@ -35,7 +35,28 @@ class AddNewProduct extends Component{
                 "Design",
                 "User Interface",
                 "Packaging"
-            ]
+            ],
+            type:[
+                {
+                    title:'Software',
+                    subType:['Web App', 'Mobile App', 'Desktop App', 'Others'],
+                    downloadUrl:[
+                        {title:'', url:''}
+                    ]
+                },
+                {
+                    title:'Services/Consultation',
+                },
+                {
+                    title:'Hardware/Appliance',
+                }
+            ],
+            rate:{
+                type:['License','Discounted','Free','Trial'],
+                duration:['Minutes', 'Hours', 'Days', 'Weeks', 'Months', 'Year'],
+                value:'',
+                availableQuantity:''
+            }
         }
         this.getSubCategories=this.getSubCategories.bind(this)
     }
@@ -272,6 +293,25 @@ class AddNewProduct extends Component{
                         <div className="field half">
                             <select name="category" onChange={this.getSubCategories} value={this.state.category}>
                                 {renderOption(allCategories, '_id', 'name')}
+                            </select>
+                        </div>
+                        <div className="field half">
+                            <select name="subCategory" onChange={(e)=>this.setState({subCategory:e.target.value})}   value={this.state.subCategory}>
+                                {renderOption(allCurrentSubcategroies, '_id', 'SubCategoryname')}
+                            </select>
+                        </div>
+                        <div className="field half">
+                            <Field component={this.renderInput} type="text" name="name" placeholder="Name of your product / services" />
+                        </div>
+                        <div className="field half">
+                            <Field component={renderTextarea} name="description" placeholder="Give a brief description of your product/service" rows="7" />
+                        </div>
+                    </Col>
+                    <Col xs={12}>
+                        <Heading size="sm" title="Product Details" />
+                        <div className="field half">
+                            <select name="category" onChange={this.getSubCategories} value={this.state.category}>
+                                {renderOption(this.state.type, 'title', 'title')}
                             </select>
                         </div>
                         <div className="field half">
