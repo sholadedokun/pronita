@@ -107,6 +107,9 @@ function tokenForUser(user) {
   console.log(jwt.encode({ sub: user.id, iat: timestamp }, config.secret))
   return jwt.encode({ sub: user.id, iat: timestamp }, config.secret);
 }
+function sendSuccessMessage(res,noun,data,verb){
+    res.json({message:`${noun} successfully ${verb}!"`, data});
+}
 /* GET users listing. */
 router.get('/serverDate', function(req, res, next) {
     res.json({date:Date.now()});
@@ -270,8 +273,30 @@ router.post('/inventory',  function(req, res, next){
                                         //if there exists an extra feature then make a recursive call
                                         if(newFeature)   nextFeatures(newFeature)
                                         else{
-                                            //else we are done, so send back the updated inventory
-                                            res.json({message:"Inventory successfully Added!", updatedInventory});
+                                            //else we are done with the features
+                                            if(req.body.reviewQuestions){
+                                                var totalQuest=0;
+
+                                                for (index in req.body.reviewQuestions){
+                                                    const {title, questions} = req.body.reviewQuestions[index]
+                                                    var reviewQuestions = new appSchema.reviewQuestions;
+                                                    reviewQuestions.title= title
+                                                    reviewQuestions.questionText=questions
+                                                    reviewQuestions.inventoryId = inventory._id
+                                                    reviewQuestions.save((err, result)=>{
+                                                        if(err) res.send(err)
+                                                        else {
+                                                            totalQuest++
+                                                            if(req.body.reviewQuestions.length===totalQuest)
+                                                                sendSuccessMessage(res,'Inventory', updatedInventory, 'Added')
+                                                        }
+                                                    })
+                                                }
+                                            }
+                                            else{
+                                                sendSuccessMessage(res,'Inventory', updatedInventory, 'Added')
+                                            }
+
                                         }
                                     }
                                 }
