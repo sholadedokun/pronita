@@ -16,9 +16,11 @@ class AddNewProduct extends Component{
         super()
         this.state={
             allCategories:null,
-            category:'',
+            category:'Software',
             allCurrentSubcategroies:null,
             selectedCategory:'',
+            selectedType:'',
+            selectedSubType:'',
             images:[
                 {
                     file:'',
@@ -36,21 +38,21 @@ class AddNewProduct extends Component{
                 "User Interface",
                 "Packaging"
             ],
-            type:[
-                {
+            type:{
+                Software:{
                     title:'Software',
                     subType:['Web App', 'Mobile App', 'Desktop App', 'Others'],
-                    downloadUrl:[
+                    accessUrl:[
                         {title:'', url:''}
                     ]
                 },
-                {
+                "Services/Consultation":{
                     title:'Services/Consultation',
                 },
-                {
-                    title:'Hardware/Appliance',
+                "Item/Hardware/Appliances":{
+                    title:'Item/Hardware/Appliances',
                 }
-            ],
+            },
             rate:{
                 type:['License','Discounted','Free','Trial'],
                 duration:['Minutes', 'Hours', 'Days', 'Weeks', 'Months', 'Year'],
@@ -103,7 +105,6 @@ class AddNewProduct extends Component{
             images: [...newvalue], file:newfile
         })
     }
-
     updateState(){
 
         let stateToChange='';
@@ -190,20 +191,36 @@ class AddNewProduct extends Component{
             </ul>
         </div>
         )
-        // return(
-        //     specification.map((item, index )=>
-        //         {
-        //             return(
-        //                 <div key={_.uniqueId()} className="field">
-        //                     <div>{label} {index+1}</div>
-        //                     {
-        //                         this.parseSpecificationJSX(item, index, label, objectName)
-        //                     }
-        //                 </div>
-        //             )
-        //         }
-        //     )
-        // )
+    }
+    renderSubTypes({ fields, meta: {error} }){
+        return(
+        <div>
+            <ul>
+                {
+                    fields.map((member, index) =>
+                        <li key={index}>
+                            <h4>
+                                {fields.name} #{index + 1}
+                            </h4>
+                            <Field
+                                name={`${member}.title`}
+                                type="text"
+                                component={this.renderInput}
+                                label="Download Link Or Web Access"
+                            />
+                            <button
+                                type="button"
+                                title={`Remove ${fields.name}`}
+                                onClick={() => fields.remove(index)}
+                            >
+                            Delete
+                            </button>
+                        </li>
+                )}
+                <button type="button" className="button primary sm" onClick={(e)=>fields.push()}><Icon icon="plus" />{`Add ${fields.length>0?'More': ''} ${fields.name}`}</button>
+            </ul>
+        </div>
+        )
     }
     addMoreQuestions({ fields, meta: {error} }){
         return(
@@ -272,6 +289,9 @@ class AddNewProduct extends Component{
         }
 
     }
+    setSelectedType(event){
+
+    }
     onSubmit(values){
         //call action creators to upload the product...
         this.props.addNewProduct(_.assign(values, (_.omit(this.state, ['allCategories','allCurrentSubcategroies', 'reviewQuestions' ]))))
@@ -279,7 +299,7 @@ class AddNewProduct extends Component{
     }
     render(){
 
-        let {allCategories, allCurrentSubcategroies}=this.state
+        let {allCategories, allCurrentSubcategroies, selectedType, type}=this.state
         const {handleSubmit}=this.props;
         // let categoryOptions=["Please wait, categories are loading"];
         // let subCategoryOptions=["Please wait, subCategories are loading"];
@@ -310,15 +330,22 @@ class AddNewProduct extends Component{
                     <Col xs={12}>
                         <Heading size="sm" title="Product Details" />
                         <div className="field half">
-                            <select name="category" onChange={this.getSubCategories} value={this.state.category}>
-                                {renderOption(this.state.type, 'title', 'title')}
+                            <select name="category" onChange={(e)=>this.setState({selectedType:e.target.value})}   value={this.state.selectedType}>
+                                {renderOption(type, 'title', 'title')}
                             </select>
                         </div>
-                        <div className="field half">
-                            <select name="subCategory" onChange={(e)=>this.setState({subCategory:e.target.value})}   value={this.state.subCategory}>
-                                {renderOption(allCurrentSubcategroies, '_id', 'SubCategoryname')}
-                            </select>
-                        </div>
+                        {
+                            (selectedType && type[selectedType].subType) ?
+                            <div className="field half">
+                                <select name="subCategory" onChange={(e)=>this.setState({selectedSubType:e.target.value})}   value={this.state.selectedSubType}>
+                                    {renderOption(type[selectedType].subType)}
+                                </select>
+                                <FieldArray name="Access Link" component={this.renderSubTypes.bind(this)} />
+
+                            </div>
+                            :
+                            ''
+                        }
                         <div className="field half">
                             <Field component={this.renderInput} type="text" name="name" placeholder="Name of your product / services" />
                         </div>

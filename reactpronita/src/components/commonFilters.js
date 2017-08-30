@@ -19,8 +19,10 @@ export function Pluralise ({count, singluar, plura}){
 export function renderOption(allOptions, value, name){
     return(
         _.map(allOptions, (item, index)=>{
+            let optionValue= (value) ? item[value] : item
+            let OptionName= (name) ? item[name] : item
             return(
-                <option key={_.uniqueId()} value={item[value]}>{item[name]}</option>
+                <option key={_.uniqueId()} value={optionValue}>{OptionName}</option>
             )
         })
     )

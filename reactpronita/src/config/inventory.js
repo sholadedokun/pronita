@@ -11,7 +11,7 @@ export inventoryForm={
         "specifications":[
             {"title":"", "description":""}
         ]
-    }
+    },
     "reviewQuestions":{
         "product":[
             "Question":""
