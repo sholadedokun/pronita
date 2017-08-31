@@ -72,7 +72,6 @@ var commentsSchema= new Schema({
 var inventorySettingsSchema= new Schema({
     price: Number,
     discount: Number,
-    expiryDate:String,
     inventoryId:{type:Schema.Types.ObjectId, ref:'inventory'},
     dateCreated:{type: Date, default: Date.now}
 });

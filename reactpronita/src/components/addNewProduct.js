@@ -21,6 +21,7 @@ class AddNewProduct extends Component{
             selectedCategory:'',
             selectedType:'',
             selectedSubType:'',
+            selectedStatus:'Inactive',
             images:[
                 {
                     file:'',
@@ -58,7 +59,8 @@ class AddNewProduct extends Component{
                 duration:['Minutes', 'Hours', 'Days', 'Weeks', 'Months', 'Year'],
                 value:'',
                 availableQuantity:''
-            }
+            },
+            status:['Active', 'Inactive']
         }
         this.getSubCategories=this.getSubCategories.bind(this)
     }
@@ -294,12 +296,12 @@ class AddNewProduct extends Component{
     }
     onSubmit(values){
         //call action creators to upload the product...
-        this.props.addNewProduct(_.assign(values, (_.omit(this.state, ['allCategories','allCurrentSubcategroies', 'reviewQuestions' ]))))
+        this.props.addNewProduct(_.assign(values, (_.omit(this.state, ['allCategories','allCurrentSubcategroies', 'reviewQuestions', 'rate', 'type', 'status' ]))))
         // .then(data=> this.props.history.push('/userAccount'))
     }
     render(){
 
-        let {allCategories, allCurrentSubcategroies, selectedType, type}=this.state
+        let {allCategories, allCurrentSubcategroies, selectedType, type, rate, status, selectedStatus}=this.state
         const {handleSubmit}=this.props;
         // let categoryOptions=["Please wait, categories are loading"];
         // let subCategoryOptions=["Please wait, subCategories are loading"];
@@ -346,12 +348,36 @@ class AddNewProduct extends Component{
                             :
                             ''
                         }
+                    </Col>
+                    <Col xs={12}>
+                        <Heading size="sm" title="Rate Type" />
                         <div className="field half">
-                            <Field component={this.renderInput} type="text" name="name" placeholder="Name of your product / services" />
+                            <select name="rateType" onChange={(e)=>this.setState({selectedRate:e.target.value})}   value={this.state.selectedRate}>
+                                {renderOption(rate.type)}
+                            </select>
                         </div>
                         <div className="field half">
-                            <Field component={renderTextarea} name="description" placeholder="Give a brief description of your product/service" rows="7" />
+                            <select name="rateDuration" onChange={(e)=>this.setState({selectedRateDuration:e.target.value})}   value={this.state.selectedRateDuration}>
+                                {renderOption(rate.duration)}
+                            </select>
                         </div>
+                        <div className="field half">
+                            <Field
+                                name="rateValue"
+                                type="text"
+                                component={this.renderInput.bind(this)}
+                                placeholder="Enter Price"
+                            />
+                        </div>
+                        <div className="field half">
+                            <Field
+                                name="rateQuantity"
+                                type="text"
+                                component={this.renderInput.bind(this)}
+                                placeholder="Available Quantity"
+                            />
+                        </div>
+
                     </Col>
                     <Col xs={12}>
                         <Heading size="sm" title="Key Features" />
@@ -377,7 +403,11 @@ class AddNewProduct extends Component{
                             {this.renderReviewQuestions()}
                         </ul>
                     </Col>
-
+                    <div className="field half">
+                        <select name="rateDuration" onChange={(e)=>this.setState({selectedStatus:e.target.value})}   value={selectedStatus}>
+                            {renderOption(status)}
+                        </select>
+                    </div>
                     <input type="submit" value="Save" icon="save" />
                 </form>
             </Col>
