@@ -17,6 +17,7 @@ export function Pluralise ({count, singluar, plura}){
     )
 }
 export function renderOption(allOptions, value, name){
+    // console.log(allOptions)
     return(
         _.map(allOptions, (item, index)=>{
             let optionValue= (value) ? item[value] : item

@@ -97,6 +97,22 @@ class AddNewProduct extends Component{
             </span>
         )
     }
+    renderSelect(field){
+
+        const {meta:{touched, error},optionArray, input} = field;
+        const classN= `${ touched && error ? 'inputError':'' }`;
+        field.input.name= field.input.name.replace(' ', '')
+        console.log(field)
+        return(
+
+            <span>
+                <select  className={classN}  {...input}>
+                    {renderOption(optionArray)}
+                </select>
+                <span className='textError'>{touched ? error : ''}</span>
+            </span>
+        )
+    }
     imageUploadManager(index, file, ){
         //setImage preview
         let newfile= [...this.state.file , file[0]]
@@ -194,7 +210,7 @@ class AddNewProduct extends Component{
         </div>
         )
     }
-    renderSubTypes({ fields, meta: {error} }){
+    renderSubTypesLink({ fields, meta: {error} }){
         return(
         <div>
             <ul>
@@ -205,7 +221,7 @@ class AddNewProduct extends Component{
                                 {fields.name} #{index + 1}
                             </h4>
                             <Field
-                                name={`${member}.title`}
+                                name={`${member}`}
                                 type="text"
                                 component={this.renderInput}
                                 label="Download Link Or Web Access"
@@ -218,6 +234,37 @@ class AddNewProduct extends Component{
                             Delete
                             </button>
                         </li>
+                )}
+                <button type="button" className="button primary sm" onClick={(e)=>fields.push()}><Icon icon="plus" />{`Add ${fields.length>0?'More': ''} ${fields.name}`}</button>
+            </ul>
+        </div>
+        )
+    }
+    renderSubTypes({ fields, meta: {error} }){
+        return(
+        <div>
+            <ul>
+                {
+                    fields.map((member, index) =>
+                        <div key={index} className="field half">
+                            <h4>
+                                {fields.name} #{index + 1}
+                            </h4>
+                            <Field
+                                name={`${member}.title`}
+                                optionArray={this.state.type[this.state.selectedType].subType}
+                                component={this.renderSelect.bind(this)}
+                                label="Download Link Or Web Access"
+                            />
+                            <FieldArray name="Access Link" component={this.renderSubTypesLink.bind(this)} />
+                            <button
+                                type="button"
+                                title={`Remove ${fields.name}`}
+                                onClick={() => fields.remove(index)}
+                            >
+                            Delete
+                            </button>
+                        </div>
                 )}
                 <button type="button" className="button primary sm" onClick={(e)=>fields.push()}><Icon icon="plus" />{`Add ${fields.length>0?'More': ''} ${fields.name}`}</button>
             </ul>
@@ -338,13 +385,8 @@ class AddNewProduct extends Component{
                         </div>
                         {
                             (selectedType && type[selectedType].subType) ?
-                            <div className="field half">
-                                <select name="subCategory" onChange={(e)=>this.setState({selectedSubType:e.target.value})}   value={this.state.selectedSubType}>
-                                    {renderOption(type[selectedType].subType)}
-                                </select>
-                                <FieldArray name="Access Link" component={this.renderSubTypes.bind(this)} />
 
-                            </div>
+                            <FieldArray name="subTypes" component={this.renderSubTypes.bind(this)} />
                             :
                             ''
                         }
