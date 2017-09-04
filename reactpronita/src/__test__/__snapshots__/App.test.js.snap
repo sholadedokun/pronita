@@ -1,0 +1,132 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`>>>H O M E --- Snapshot +++capturing Snapshot of App Layout 1`] = `
+<div
+  className="App nop container-fluid"
+>
+  <div
+    className="row"
+  >
+    <div
+      className="App-header col-xs-12"
+    >
+      <div
+        className="container"
+      >
+        <div
+          className="companyName"
+        >
+          Pronita
+        </div>
+        <ul
+          className="nav"
+          role={null}
+        >
+          <li
+            active={undefined}
+            activeHref={undefined}
+            activeKey={undefined}
+            onSelect={null}
+          >
+            <a
+              href="/"
+              onClick={[Function]}
+            >
+              Home
+            </a>
+          </li>
+          <li
+            active={undefined}
+            activeHref={undefined}
+            activeKey={undefined}
+            onSelect={null}
+          >
+            <a
+              href="/inventory"
+              onClick={[Function]}
+            >
+              inventory
+            </a>
+          </li>
+          <li
+            active={undefined}
+            activeHref={undefined}
+            activeKey={undefined}
+            onSelect={null}
+          >
+            <a
+              href="/pricing"
+              onClick={[Function]}
+            >
+              Pricing
+            </a>
+          </li>
+          <li
+            active={undefined}
+            activeHref={undefined}
+            activeKey={undefined}
+            onSelect={null}
+          >
+            <a
+              href="/help"
+              onClick={[Function]}
+            >
+              Help
+            </a>
+          </li>
+          <li
+            active={undefined}
+            activeHref={undefined}
+            activeKey={undefined}
+            className="nav-item"
+            onSelect={null}
+          >
+            <a
+              className="nav-link"
+              href="/signin"
+              onClick={[Function]}
+            >
+              Sign In
+            </a>
+          </li>
+          <li
+            active={undefined}
+            activeHref={undefined}
+            activeKey={undefined}
+            className="nav-item"
+            onSelect={null}
+          >
+            <a
+              className="nav-link"
+              href="/signup"
+              onClick={[Function]}
+            >
+              Sign Up
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div
+      className="container"
+    >
+      <div
+        className="restaurantHead  row"
+      >
+        <div
+          className="nop col-xs-8"
+        >
+           
+          <span />
+           Found
+        </div>
+        <div
+          className="nop col-xs-4"
+        >
+          Pronita Space
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

@@ -1,29 +1,17 @@
-
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {BrowserRouter as Router,  Route } from 'react-router-dom';
+
+import App from './components/app'
 
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import reduxThunk from 'redux-thunk';
 import {AUTH_USER} from './actions/actionTypes'
-import './styles/index.css';
-import './styles/App.css';
-
-
-import Header from './components/header';
-import Home from './components/home';
-import Signin from './components/auth/signin';
-import Signup from './components/auth/signup';
-import Invenotry from './components/inventory';
-import Account from './components/userAccount';
-import Pricing from './components/pricing';
-import Help from './components/help';
-import requireAuth from './components/auth/require_auth';
+import registerServiceWorker from './registerServiceWorker';
 import reducers from './reducers';
 
-import {Grid, Row} from 'react-bootstrap';
-import registerServiceWorker from './registerServiceWorker';
+import './styles/index.css';
+import './styles/App.css';
 
 //applying reduxThunk as middleware enabled us to use dispatch from actions
 const createStoreWithMiddleware = applyMiddleware(reduxThunk)(createStore);
@@ -36,27 +24,9 @@ if (token) {
   store.dispatch({ type: AUTH_USER });
 }
 
-//We can now
-//wrap redux store with our application through the Provider Tag
-//enable route for our application through the Router Tag
-//bootstrap, 'Grid' get resolve to container
-//attaching our app to the html dom through document.getElementById('root'))
 ReactDOM.render(
     <Provider store={store}>
-        <Router>
-            <Grid fluid={true} className="App nop">
-                <Row>
-                    <Header title="Pronita" />
-                    <Route  exact path="/"  component={Home} />
-                    <Route  exact path="/signin"  component={Signin} />
-                    <Route  exact path="/signup"  component={Signup} />
-                    <Route  exact path="/inventory"  component={Invenotry} />
-                    <Route  path="/userAccount"  component={requireAuth(Account)} />
-                    <Route  exact path="/pricing"  component={Pricing} />
-                    <Route  exact path="/help"  component={Help} />
-                </Row>
-            </Grid>
-        </Router>
+        <App />
     </Provider>,
     document.getElementById('root'));
 registerServiceWorker();
