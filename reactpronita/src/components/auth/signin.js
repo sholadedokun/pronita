@@ -36,7 +36,7 @@ class Signin extends Component {
     return (
         <form onSubmit={ handleSubmit(this.onSubmit.bind(this)) }>
             <div className="field half first">
-                <Field component={this.renderInput} type="text" name="identity"  placeholder="user name or email" />
+                <Field component={this.renderInput} type="email" name="identity"  placeholder="Type Email Address" />
             </div>
             <div className="field half first">
                 <Field component={this.renderInput} type="password" name="password"  placeholder="Type Password" />
@@ -50,7 +50,7 @@ class Signin extends Component {
 function validate(formProps) {
     const errors = {};
     if (!formProps.identity) {
-        errors.identity = 'Please enter an email or username';
+        errors.identity = 'Please enter your email';
     }
 
     if (!formProps.password) {

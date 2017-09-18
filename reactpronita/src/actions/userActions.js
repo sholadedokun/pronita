@@ -4,21 +4,29 @@ import {
   AUTH_USER,
   UNAUTH_USER,
   AUTH_ERROR,
-  FETCH_OFFERS
+  FETCH_OFFERS,
+  RESET_USER
 } from './actionTypes';
+import md5 from "js-md5";
 
 const ROOT_URL = 'http://localhost:3000/appActions';
+
+function encryptPassword(raw){
+    return md5.base64(raw);
+}
 
 export function signinUser({ identity, password }) {
   return function(dispatch) {
     return new Promise( (resolve)=>{
+        //encrypt the password
+        password = encryptPassword(password)
         // Submit email/password to the server
         axios.post(`${ROOT_URL}/signin`, { identity, password })
             .then(response => {
                 // If request is good...
-                // - Update state to indicate user is authenticated
+                // -  Update state to indicate user is authenticated
                 dispatch({ type: AUTH_USER });
-                // - Save the JWT token
+                // -  Save the JWT token
                 localStorage.setItem('PronitaToken', response.data.token);
                 resolve(response)
             })
@@ -27,6 +35,7 @@ export function signinUser({ identity, password }) {
                 // - Show an error to the user
                 dispatch(authError('Wrong Login credentials, Please try again.'));
             });
+
     })
   }
 }
@@ -34,9 +43,12 @@ export function signinUser({ identity, password }) {
 export function signupUser(values) {
     return function(dispatch) {
         return new Promise( (resolve)=>{
+            //encrypt the password
+            values.password = encryptPassword(values.password)
+            //lets remove the conFirm Password from the object to send
+            delete values.conPassword;
             axios.post(`${ROOT_URL}/signup`, values)
             .then(response => {
-
                 dispatch({ type: AUTH_USER });
                 localStorage.setItem('PronitaToken', response.data.token);
                 resolve (response)
@@ -53,6 +65,12 @@ export function authError(error) {
   return {
     type: AUTH_ERROR,
     payload: error
+  };
+}
+export function resetUser(error) {
+  return function(dispatch) {
+    dispatch({  type: RESET_USER })
+
   };
 }
 

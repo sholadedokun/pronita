@@ -483,7 +483,7 @@ function validate(formProps) {
     //     errors.password = 'Passwords must match';
     // }
 
-    // return errors;
+    return errors;
 }
 function mapStateToProps(state) {
   return { errorMessage: state.user.error,
