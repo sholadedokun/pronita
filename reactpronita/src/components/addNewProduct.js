@@ -40,6 +40,7 @@ class AddNewProduct extends Component{
                 "Packaging"
             ],
             type:{
+                'Select Product Type':{title:'Select Product Type'},
                 Software:{
                     title:'Software',
                     subType:['Web App', 'Mobile App', 'Desktop App', 'Others'],
@@ -66,9 +67,11 @@ class AddNewProduct extends Component{
     }
     componentWillMount(){
         if(!this.props.allCategories)this.props.fetchAllCategories()
-        .then(response=>
-            this.setState({allCategories: this.props.allCategories
-            })
+        .then(response=>{
+            this.props.allCategories.unshift({name:'Select a Category', _id:0});
+            this.setState({allCategories: this.props.allCategories})
+            }
+
         )
     }
     parseSpecificationJSX(item, index, label, objectName ){
@@ -141,42 +144,55 @@ class AddNewProduct extends Component{
         // console.log( arguments)
     }
     removeImage(index){
-        console.log(index)
+        let newImages=[...this.state.images];
+        newImages.splice(index, 1);
+        this.setState({images:newImages})
+    }
+    addMoreImage(){
+        this.setState({images:[...this.state.images, {file:'',previewUrl:''}]})
     }
     renderImageInput(){
+        let allImages=this.state.images
         return(
-            this.state.images.map((item, index)=>{
-                let imagePreview=(
-                    <Dropzone accept={'image/*'} multiple={false} onDrop={this.imageUploadManager.bind(this, index)} className="dragSelectImage">
-                        <Icon icon="picture-o" size="md" /><br />
-                        Add <Icon icon="plus"/> by clicking or <br />
-                        draging an image here.
-                    </Dropzone>
 
-                )
-                if(item.previewUrl !== '') imagePreview = <Image src={item.previewUrl} />
+            allImages.map((item, index)=>{
                 return(
-                    <li  key={_.uniqueId()} className="eachImage">
-                        {item.previewUrl ?
-                            <img src={item.previewUrl} width="100%" />:
-                            imagePreview
-                        }
+                    <li  key={_.uniqueId()}>
                         {
-                            item.ImageInfo ?
-                                <div>
+                            (item.previewUrl !== '')?
+                            <div  className="eachImage">
+                                <img src={item.previewUrl} width="100%" />
+                                <div className="imageSettings">
                                     <span>{item.ImageInfo}</span>
                                     {item.ImageCrop?<span>CROP</span> : ''}
-                                </div>:''
-                        }
-                        {item.previewUrl ?
-                            <Icon icon="trash-o" onClick={this.removeImage(index)} />:''
+                                    <span onClick={this.removeImage.bind(this, index)}><Icon icon="trash-o" /> Delete</span>
+                                </div>
+
+                            </div>
+                            :
+                            <div className="eachImage">
+                                {
+                                    (index===(allImages.length-1) && allImages.length < 6)?
+                                    <div onClick={this.addMoreImage.bind(this)} className="dragSelectImage">
+                                        <Icon icon="plus" size="md" /><br />
+                                        Add More Images
+                                    </div>:
+                                    <Dropzone accept={'image/*'} multiple={false} onDrop={this.imageUploadManager.bind(this, index)} className="dragSelectImage">
+                                       <Icon icon="picture-o" size="md" /><br />
+                                       <Icon icon="plus"/> Add by clicking or <br />
+                                       draging an image here.
+                                    </Dropzone>
+                                }
+                            </div>
                         }
                     </li>
+
                 )
             })
         )
 
     }
+
     renderSpecifications({ fields, meta: {error} }){
         return(
         <div>
@@ -322,17 +338,21 @@ class AddNewProduct extends Component{
 
         if(!this.props.subCategories){
             this.props.fetchAllSubCategories(event.target.value)
-            .then(response=>
+            .then(response=>{
+                let allSubcategories=this.props.subCategories.filter((item)=> item.category._id == response);
+                allSubcategories.unshift({SubCategoryname:'Select a subCategory', _id:0})
                 this.setState({
                     category:response,
-                    allCurrentSubcategroies:this.props.subCategories.filter((item)=> item.category._id == response)
+                    allCurrentSubcategroies:allSubcategories
                 })
-            )
+            })
         }
         else{
+            let allSubcategories=this.props.subCategories.filter((item)=> item.category._id == event.target.value);
+            allSubcategories.unshift({SubCategoryname:'Select a subCategory', _id:0})
             this.setState({
                 category:event.target.value,
-                allCurrentSubcategroies:  this.props.subCategories.filter((item)=> item.category._id == event.target.value)
+                allCurrentSubcategroies:  allSubcategories
 
             })
         }
@@ -343,7 +363,8 @@ class AddNewProduct extends Component{
     }
     onSubmit(values){
         //call action creators to upload the product...
-        this.props.addNewProduct(_.assign(values, (_.omit(this.state, ['allCategories','allCurrentSubcategroies', 'reviewQuestions', 'rate', 'type', 'status' ]))))
+        console.log(values)
+        // this.props.addNewProduct(_.assign(values, (_.omit(this.state, ['allCategories','allCurrentSubcategroies', 'reviewQuestions', 'rate', 'type', 'status' ]))))
         // .then(data=> this.props.history.push('/userAccount'))
     }
     render(){

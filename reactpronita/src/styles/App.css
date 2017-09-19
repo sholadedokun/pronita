@@ -120,9 +120,10 @@ li {
 
 .eachImage {
   background: #eee;
+  position: relative;
   float: left;
   width: 200px;
-  height: 200px;
+  height: 220px;
   border: #aaa 1px dashed;
   text-align: center;
   margin-right: 10px;
@@ -208,3 +209,11 @@ li {
     transform: rotate(0deg); }
   to {
     transform: rotate(360deg); } }
+
+.imageSettings {
+  position: absolute;
+  bottom: 0px;
+  width: inherit;
+  background: #777;
+  padding: 5px 0;
+  color: #eee; }

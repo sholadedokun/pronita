@@ -20,6 +20,7 @@ export function signinUser({ identity, password }) {
     return new Promise( (resolve)=>{
         //encrypt the password
         password = encryptPassword(password)
+        dispatch({type:RESET_USER})
         // Submit email/password to the server
         axios.post(`${ROOT_URL}/signin`, { identity, password })
             .then(response => {
@@ -39,7 +40,6 @@ export function signinUser({ identity, password }) {
     })
   }
 }
-
 export function signupUser(values) {
     return function(dispatch) {
         return new Promise( (resolve)=>{
