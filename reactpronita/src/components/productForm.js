@@ -1,23 +1,18 @@
 import React, {Component} from 'react';
 import Heading from './heading';
-import {Grid, Row, Col} from 'react-bootstrap';
+import { Col} from 'react-bootstrap';
 import { Field, FieldArray, reduxForm } from 'redux-form';
-import {connect} from 'react-redux';
-import {fetchAllCategories, fetchAllSubCategories, addNewProduct} from '../actions/inventoryActions'
 import Icon from './icon';
 import {renderOption, renderTextarea} from './commonFilters'
 import _ from 'lodash';
-import Button from './button'
-import Image from './image'
 import Dropzone from 'react-dropzone';
-import ProductForm from './productForm'
 
-class AddNewProduct extends Component{
-    constructor(){
-        super()
+class productForm extends Component{
+    constructor(props){
+        super(props)
         this.state={
             allCategories:null,
-            category:'',
+            category:props.category,
             allCurrentSubcategroies:null,
             selectedCategory:'',
             selectedType:'',
@@ -64,16 +59,9 @@ class AddNewProduct extends Component{
             },
             status:['Active', 'Inactive']
         }
-        this.getSubCategories=this.getSubCategories.bind(this)
+
     }
     componentWillMount(){
-        if(!this.props.allCategories)this.props.fetchAllCategories()
-        .then(response=>{
-            this.props.allCategories.unshift({name:'Select a Category', _id:0});
-            this.setState({allCategories: this.props.allCategories})
-            }
-
-        )
     }
     parseSpecificationJSX(item, index, label, objectName ){
         let allFields=[];
@@ -334,42 +322,119 @@ class AddNewProduct extends Component{
             [type]: read
         })
     }
-    getSubCategories(event){
-        if(!this.props.subCategories){
-            this.props.fetchAllSubCategories(event.target.value)
-            .then(response=>{
-                let allSubcategories=this.props.subCategories.filter((item)=> item.category._id == response);
-                allSubcategories.unshift({SubCategoryname:'Select a subCategory', _id:0})
-                this.setState({
-                    category:response,
-                    allCurrentSubcategroies:allSubcategories
-                })
-            })
-        }
-        else{
-            let allSubcategories=this.props.subCategories.filter((item)=> item.category._id == event.target.value);
-            allSubcategories.unshift({SubCategoryname:'Select a subCategory', _id:0})
-            this.setState({
-                category:event.target.value,
-                allCurrentSubcategroies:  allSubcategories
-            })
-        }
-
+    changeCategory(e){
+        this.setState({category:e.target.value})
+        this.props.fetchSubCategories(e)
     }
-
     onSubmit(values){
         //call action creators to upload the product...
-        this.props.addNewProduct(values).then(data=> this.props.history.push('/userAccount'))
+        let allValues=_.assign(values, (_.omit(this.state, ['allCategories','allCurrentSubcategroies', 'reviewQuestions', 'rate', 'type', 'status' ])));
+        this.props.onFormSubmit(allValues)
     }
     render(){
+        let {selectedType, type, rate, status, selectedStatus}=this.state
+        const {allCategories, category, allCurrentSubcategroies, handleSubmit, fetchSubCategories}=this.props;
 
-        let {allCategories, allCurrentSubcategroies, category, selectedType, type, rate, status, selectedStatus}=this.state;
-        console.log(category);
-        const {handleSubmit}=this.props;
-        // let categoryOptions=["Please wait, categories are loading"];
-        // let subCategoryOptions=["Please wait, subCategories are loading"];
         return(
-            <ProductForm allCategories={allCategories} category={category} allCurrentSubcategroies={allCurrentSubcategroies} onFormSubmit={this.onSubmit.bind(this)} fetchSubCategories={this.getSubCategories.bind(this)} />
+            <Col xs={12} className="addNewProduct">
+                <Heading size="md" title="Add New Product" icon="plus" marginBottom='1em' />
+
+                <form onSubmit={ handleSubmit(this.onSubmit.bind(this)) }>
+                    <Col xs={12}>
+                        <Heading size="sm" title="General Details" />
+                        <div className="field half">
+                            <select name="selectedCategory" onChange={this.changeCategory.bind(this)} value={category}>
+                                {renderOption(allCategories, '_id', 'name')}
+                            </select>
+                        </div>
+                        <div className="field half">
+                            <select name="subCategory" onChange={(e)=>this.setState({subCategory:e.target.value})}   value={this.state.subCategory}>
+                                {renderOption(allCurrentSubcategroies, '_id', 'SubCategoryname')}
+                            </select>
+                        </div>
+                        <div className="field half">
+                            <Field component={this.renderInput} type="text" name="name" placeholder="Name of your product / services" />
+                        </div>
+                        <div className="field half">
+                            <Field component={renderTextarea} name="description" placeholder="Give a brief description of your product/service" rows="7" />
+                        </div>
+                    </Col>
+                    <Col xs={12}>
+                        <Heading size="sm" title="Product Details" />
+                        <div className="field half">
+                            <select name="type" onChange={(e)=>this.setState({selectedType:e.target.value})}   value={this.state.selectedType}>
+                                {renderOption(type, 'title', 'title')}
+                            </select>
+                        </div>
+                        {
+                            (selectedType && type[selectedType].subType) ?
+
+                            <FieldArray name="subTypes" component={this.renderSubTypes.bind(this)} />
+                            :
+                            ''
+                        }
+                    </Col>
+                    <Col xs={12}>
+                        <Heading size="sm" title="Rate Type" />
+                        <div className="field half">
+                            <select name="rateType" onChange={(e)=>this.setState({selectedRate:e.target.value})}   value={this.state.selectedRate}>
+                                {renderOption(rate.type)}
+                            </select>
+                        </div>
+                        <div className="field half">
+                            <select name="rateDuration" onChange={(e)=>this.setState({selectedRateDuration:e.target.value})}   value={this.state.selectedRateDuration}>
+                                {renderOption(rate.duration)}
+                            </select>
+                        </div>
+                        <div className="field half">
+                            <Field
+                                name="rateValue"
+                                type="text"
+                                component={this.renderInput.bind(this)}
+                                placeholder="Enter Price"
+                            />
+                        </div>
+                        <div className="field half">
+                            <Field
+                                name="rateQuantity"
+                                type="text"
+                                component={this.renderInput.bind(this)}
+                                placeholder="Available Quantity"
+                            />
+                        </div>
+                    </Col>
+                    <Col xs={12}>
+                        <Heading size="sm" title="Key Features" />
+                            <FieldArray name="key Features" component={this.renderSpecifications.bind(this)} />
+                            {/*{this.renderSpecifications(this.state.keyFeatures, 'key Features', 'keyFeatures')}
+                            <Button type="primary" icon="plus" value="Add More Key Features" size="sm" onClick={this.addMoreFeatures.bind(this, 'keyFeatures')} />*/}
+                    </Col>
+                    <Col xs={12}>
+                        <Heading size="sm" title="Specifications" />
+                            <FieldArray name="specifications" component={this.renderSpecifications.bind(this)} />
+                            {/*{this.renderSpecifications(this.state.specifications, 'specifications')}
+                            <Button type="primary" icon="plus" value="Add More Specifications" size="sm" onClick={this.addMoreFeatures.bind(this, 'specifications')} />*/}
+                    </Col>
+                    <Col xs={12}>
+                        <Heading size="sm" title="Add Product Image" />
+                        <ul className="">
+                            {this.renderImageInput()}
+                        </ul>
+                    </Col>
+                    <Col xs={12}>
+                        <Heading size="sm" title="Review Questions" />
+                        <ul className="">
+                            {this.renderReviewQuestions()}
+                        </ul>
+                    </Col>
+                    <div className="field half">
+                        <select name="rateDuration" onChange={(e)=>this.setState({selectedStatus:e.target.value})}   value={selectedStatus}>
+                            {renderOption(status)}
+                        </select>
+                    </div>
+                    <input type="submit" value="Save" icon="save" />
+                </form>
+            </Col>
         )
     }
 }
@@ -402,15 +467,9 @@ function validate(formProps) {
 
     return errors;
 }
-function mapStateToProps(state) {
-  return { errorMessage: state.user.error,
-           allCategories: state.inventory.allCategories,
-           subCategories: state.inventory.subCategories
-   };
-}
 export default reduxForm({
     validate,
-    form: 'addNewProduct'
+    form: 'productForm'
 })(
-    connect(mapStateToProps, {fetchAllCategories, fetchAllSubCategories, addNewProduct})(AddNewProduct)
+    productForm
 )

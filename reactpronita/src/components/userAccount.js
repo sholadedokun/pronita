@@ -80,7 +80,7 @@ class userProfile extends (Component){
 }
 function mapStateToProps(state){
     return{
-        products: state.user.products
+        products: state.inventory.products
     }
 }
 
